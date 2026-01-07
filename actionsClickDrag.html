@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Click & Drag Actions - Selenium Training</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .section {
+            margin-bottom: 40px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .section h2 {
+            color: #555;
+            margin-bottom: 15px;
+        }
+        .clickable {
+            padding: 10px 20px;
+            margin: 5px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .clickable:hover {
+            background-color: #0056b3;
+        }
+        .double-click {
+            padding: 15px 30px;
+            margin: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .right-click {
+            padding: 15px 30px;
+            margin: 10px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .drag-container {
+            display: flex;
+            gap: 50px;
+            align-items: flex-start;
+            margin: 20px 0;
+        }
+        .drag-source {
+            width: 100px;
+            height: 100px;
+            background-color: #ffc107;
+            border: 2px solid #e0a800;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: move;
+            font-weight: bold;
+            color: #333;
+        }
+        .drop-target {
+            width: 150px;
+            height: 150px;
+            border: 2px dashed #6c757d;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f8f9fa;
+        }
+        .drop-target.drag-over {
+            background-color: #d4edda;
+            border-color: #28a745;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .context-menu {
+            display: none;
+            position: absolute;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+        .context-menu-item {
+            padding: 8px 16px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+        }
+        .context-menu-item:hover {
+            background-color: #f5f5f5;
+        }
+        .slider-container {
+            margin: 20px 0;
+        }
+        .slider {
+            width: 100%;
+            height: 5px;
+            border-radius: 5px;
+            background: #d3d3d3;
+            outline: none;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+        .slider:hover {
+            opacity: 1;
+        }
+        .slider::-webkit-slider-thumb {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #007bff;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Click & Drag Actions Practice</h1>
+        
+        <div class="section">
+            <h2>Single Click Actions</h2>
+            <button class="clickable" onclick="handleClick(this)">Click Me</button>
+            <button class="clickable" onclick="handleClick(this)">Click Me Too</button>
+            <button class="clickable" onclick="handleClick(this)">And Me</button>
+            <div id="click-result" class="result">Click a button above...</div>
+        </div>
+
+        <div class="section">
+            <h2>Double Click Actions</h2>
+            <button class="double-click" ondblclick="handleDoubleClick(this)">Double Click Me</button>
+            <div id="double-click-result" class="result">Double click the button above...</div>
+        </div>
+
+        <div class="section">
+            <h2>Right Click Actions</h2>
+            <button class="right-click" oncontextmenu="handleRightClick(event, this)">Right Click Me</button>
+            <div id="right-click-result" class="result">Right click the button above...</div>
+        </div>
+
+        <div class="section">
+            <h2>Drag and Drop</h2>
+            <div class="drag-container">
+                <div class="drag-source" draggable="true" ondragstart="handleDragStart(event)" id="drag-item">
+                    Drag Me
+                </div>
+                <div class="drop-target" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" id="drop-zone">
+                    Drop Here
+                </div>
+            </div>
+            <div id="drag-result" class="result">Drag the yellow box to the drop zone...</div>
+        </div>
+
+        <div class="section">
+            <h2>Mouse Hover</h2>
+            <div style="display: flex; gap: 20px;">
+                <div class="clickable" onmouseover="handleHover(this, 'over')" onmouseout="handleHover(this, 'out')" id="hover-box">
+                    Hover Over Me
+                </div>
+                <div id="hover-result" class="result">Hover over the box...</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Slider Control</h2>
+            <div class="slider-container">
+                <label for="slider">Value: <span id="slider-value">50</span></label>
+                <input type="range" min="0" max="100" value="50" class="slider" id="slider" oninput="updateSliderValue(this.value)">
+            </div>
+        </div>
+    </div>
+
+    <div class="context-menu" id="context-menu">
+        <div class="context-menu-item" onclick="selectContextMenu('Copy')">Copy</div>
+        <div class="context-menu-item" onclick="selectContextMenu('Paste')">Paste</div>
+        <div class="context-menu-item" onclick="selectContextMenu('Cut')">Cut</div>
+        <div class="context-menu-item" onclick="selectContextMenu('Delete')">Delete</div>
+    </div>
+
+    <script>
+        function handleClick(element) {
+            document.getElementById('click-result').textContent = `Clicked: ${element.textContent}`;
+        }
+
+        function handleDoubleClick(element) {
+            document.getElementById('double-click-result').textContent = `Double clicked: ${element.textContent}`;
+        }
+
+        function handleRightClick(event, element) {
+            event.preventDefault();
+            document.getElementById('right-click-result').textContent = `Right clicked: ${element.textContent}`;
+            
+            // Show context menu
+            const contextMenu = document.getElementById('context-menu');
+            contextMenu.style.display = 'block';
+            contextMenu.style.left = event.pageX + 'px';
+            contextMenu.style.top = event.pageY + 'px';
+        }
+
+        function handleDragStart(event) {
+            event.dataTransfer.setData('text/plain', event.target.id);
+            document.getElementById('drag-result').textContent = 'Dragging...';
+        }
+
+        function handleDragOver(event) {
+            event.preventDefault();
+            event.target.classList.add('drag-over');
+        }
+
+        function handleDragLeave(event) {
+            event.target.classList.remove('drag-over');
+        }
+
+        function handleDrop(event) {
+            event.preventDefault();
+            const draggedId = event.dataTransfer.getData('text/plain');
+            const draggedElement = document.getElementById(draggedId);
+            
+            event.target.appendChild(draggedElement);
+            event.target.classList.remove('drag-over');
+            document.getElementById('drag-result').textContent = 'Item dropped successfully!';
+        }
+
+        function handleHover(element, action) {
+            const result = document.getElementById('hover-result');
+            if (action === 'over') {
+                result.textContent = 'Mouse is over the box!';
+                element.style.backgroundColor = '#0056b3';
+            } else {
+                result.textContent = 'Mouse left the box.';
+                element.style.backgroundColor = '#007bff';
+            }
+        }
+
+        function updateSliderValue(value) {
+            document.getElementById('slider-value').textContent = value;
+        }
+
+        function selectContextMenu(action) {
+            document.getElementById('right-click-result').textContent = `Context menu action: ${action}`;
+            document.getElementById('context-menu').style.display = 'none';
+        }
+
+        // Hide context menu when clicking elsewhere
+        document.addEventListener('click', function() {
+            document.getElementById('context-menu').style.display = 'none';
+        });
+    </script>
+</body>
+</html>

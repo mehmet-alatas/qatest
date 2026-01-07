@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dropdowns - Selenium Training</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .section {
+            margin-bottom: 40px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .section h2 {
+            color: #555;
+            margin-bottom: 15px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+        select, input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        .button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+        .button.success {
+            background-color: #28a745;
+        }
+        .button.success:hover {
+            background-color: #218838;
+        }
+        .button.danger {
+            background-color: #dc3545;
+        }
+        .button.danger:hover {
+            background-color: #c82333;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        .custom-dropdown {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+        .dropdown-button {
+            width: 100%;
+            padding: 10px;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .dropdown-button:hover {
+            background-color: #f8f9fa;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: white;
+            min-width: 100%;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .dropdown-content.show {
+            display: block;
+        }
+        .dropdown-item {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            cursor: pointer;
+        }
+        .dropdown-item:hover {
+            background-color: #f1f1f1;
+        }
+        .multi-select {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 5px;
+            min-height: 40px;
+            background-color: white;
+            cursor: pointer;
+        }
+        .multi-select.open {
+            border-color: #007bff;
+        }
+        .multi-select-options {
+            display: none;
+            position: absolute;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            width: 100%;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        }
+        .multi-select-options.show {
+            display: block;
+        }
+        .multi-select-option {
+            padding: 8px 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+        .multi-select-option:hover {
+            background-color: #f8f9fa;
+        }
+        .multi-select-option input {
+            width: auto;
+            margin-right: 8px;
+        }
+        .selected-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-bottom: 5px;
+        }
+        .selected-item {
+            background-color: #007bff;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .selected-item .remove {
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .cascading-dropdowns {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .cascading-dropdowns > div {
+            flex: 1;
+        }
+        .dynamic-dropdown {
+            margin-bottom: 20px;
+        }
+        .searchable-dropdown {
+            position: relative;
+        }
+        .search-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 5px;
+        }
+        .search-options {
+            display: none;
+            position: absolute;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            max-height: 150px;
+            overflow-y: auto;
+            z-index: 1000;
+            width: 100%;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        }
+        .search-options.show {
+            display: block;
+        }
+        .search-option {
+            padding: 8px 12px;
+            cursor: pointer;
+        }
+        .search-option:hover {
+            background-color: #f8f9fa;
+        }
+        .highlight {
+            background-color: #fff3cd;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Dropdowns Practice</h1>
+        
+        <div class="section">
+            <h2>Basic Select Dropdown</h2>
+            <div class="form-group">
+                <label for="basic-select">Select a country:</label>
+                <select id="basic-select" onchange="handleBasicSelect(this)">
+                    <option value="">Choose a country...</option>
+                    <option value="us">United States</option>
+                    <option value="uk">United Kingdom</option>
+                    <option value="ca">Canada</option>
+                    <option value="au">Australia</option>
+                    <option value="de">Germany</option>
+                    <option value="fr">France</option>
+                    <option value="jp">Japan</option>
+                    <option value="cn">China</option>
+                </select>
+            </div>
+            <button class="button" onclick="getBasicSelectValue()">Get Selected Value</button>
+            <button class="button" onclick="setBasicSelectValue('de')">Set to Germany</button>
+            <button class="button danger" onclick="clearBasicSelect()">Clear Selection</button>
+            <div id="basic-select-result" class="result"></div>
+        </div>
+
+        <div class="section">
+            <h2>Multi-Select Dropdown</h2>
+            <div class="form-group">
+                <label for="multi-select">Select multiple languages:</label>
+                <select id="multi-select" multiple size="5">
+                    <option value="javascript">JavaScript</option>
+                    <option value="python">Python</option>
+                    <option value="java">Java</option>
+                    <option value="csharp">C#</option>
+                    <option value="php">PHP</option>
+                    <option value="ruby">Ruby</option>
+                    <option value="go">Go</option>
+                    <option value="rust">Rust</option>
+                </select>
+            </div>
+            <button class="button" onclick="getMultiSelectValues()">Get Selected Values</button>
+            <button class="button success" onclick="selectAllLanguages()">Select All</button>
+            <button class="button danger" onclick="clearMultiSelect()">Clear All</button>
+            <div id="multi-select-result" class="result"></div>
+        </div>
+
+        <div class="section">
+            <h2>Custom Dropdown</h2>
+            <div class="form-group">
+                <label>Custom dropdown with styling:</label>
+                <div class="custom-dropdown">
+                    <div class="dropdown-button" onclick="toggleCustomDropdown()">
+                        <span id="custom-dropdown-text">Select an option...</span>
+                        <span>▼</span>
+                    </div>
+                    <div class="dropdown-content" id="custom-dropdown-content">
+                        <div class="dropdown-item" onclick="selectCustomOption('Option 1')">Option 1</div>
+                        <div class="dropdown-item" onclick="selectCustomOption('Option 2')">Option 2</div>
+                        <div class="dropdown-item" onclick="selectCustomOption('Option 3')">Option 3</div>
+                        <div class="dropdown-item" onclick="selectCustomOption('Option 4')">Option 4</div>
+                        <div class="dropdown-item" onclick="selectCustomOption('Option 5')">Option 5</div>
+                    </div>
+                </div>
+            </div>
+            <button class="button" onclick="getCustomDropdownValue()">Get Selected Value</button>
+            <div id="custom-dropdown-result" class="result"></div>
+        </div>
+
+        <div class="section">
+            <h2>Multi-Select with Checkboxes</h2>
+            <div class="form-group">
+                <label>Select multiple skills:</label>
+                <div class="multi-select" id="checkbox-multi-select" onclick="toggleCheckboxDropdown()">
+                    <div class="selected-items" id="selected-items"></div>
+                    <div style="color: #666; font-size: 12px;">Click to select skills...</div>
+                </div>
+                <div class="multi-select-options" id="checkbox-options">
+                    <div class="multi-select-option">
+                        <input type="checkbox" id="skill-html" value="HTML" onchange="updateCheckboxSelection()">
+                        <label for="skill-html">HTML</label>
+                    </div>
+                    <div class="multi-select-option">
+                        <input type="checkbox" id="skill-css" value="CSS" onchange="updateCheckboxSelection()">
+                        <label for="skill-css">CSS</label>
+                    </div>
+                    <div class="multi-select-option">
+                        <input type="checkbox" id="skill-js" value="JavaScript" onchange="updateCheckboxSelection()">
+                        <label for="skill-js">JavaScript</label>
+                    </div>
+                    <div class="multi-select-option">
+                        <input type="checkbox" id="skill-react" value="React" onchange="updateCheckboxSelection()">
+                        <label for="skill-react">React</label>
+                    </div>
+                    <div class="multi-select-option">
+                        <input type="checkbox" id="skill-node" value="Node.js" onchange="updateCheckboxSelection()">
+                        <label for="skill-node">Node.js</label>
+                    </div>
+                    <div class="multi-select-option">
+                        <input type="checkbox" id="skill-python" value="Python" onchange="updateCheckboxSelection()">
+                        <label for="skill-python">Python</label>
+                    </div>
+                </div>
+            </div>
+            <button class="button" onclick="getCheckboxSelection()">Get Selected Skills</button>
+            <button class="button success" onclick="selectAllSkills()">Select All</button>
+            <button class="button danger" onclick="clearAllSkills()">Clear All</button>
+            <div id="checkbox-result" class="result"></div>
+        </div>
+
+        <div class="section">
+            <h2>Cascading Dropdowns</h2>
+            <div class="cascading-dropdowns">
+                <div>
+                    <label for="country-select">Country:</label>
+                    <select id="country-select" onchange="updateStateDropdown()">
+                        <option value="">Select Country</option>
+                        <option value="us">United States</option>
+                        <option value="ca">Canada</option>
+                        <option value="au">Australia</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="state-select">State/Province:</label>
+                    <select id="state-select" onchange="updateCityDropdown()">
+                        <option value="">Select State</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="city-select">City:</label>
+                    <select id="city-select">
+                        <option value="">Select City</option>
+                    </select>
+                </div>
+            </div>
+            <button class="button" onclick="getCascadingValues()">Get Selected Values</button>
+            <div id="cascading-result" class="result"></div>
+        </div>
+
+        <div class="section">
+            <h2>Dynamic Dropdown</h2>
+            <div class="form-group">
+                <label for="category-select">Category:</label>
+                <select id="category-select" onchange="updateDynamicDropdown()">
+                    <option value="">Select Category</option>
+                    <option value="fruits">Fruits</option>
+                    <option value="vegetables">Vegetables</option>
+                    <option value="drinks">Drinks</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="dynamic-items">Items:</label>
+                <select id="dynamic-items">
+                    <option value="">Select Category First</option>
+                </select>
+            </div>
+            <button class="button" onclick="getDynamicValues()">Get Selected Values</button>
+            <div id="dynamic-result" class="result"></div>
+        </div>
+
+        <div class="section">
+            <h2>Searchable Dropdown</h2>
+            <div class="form-group">
+                <label>Search and select a color:</label>
+                <div class="searchable-dropdown">
+                    <input type="text" class="search-input" id="color-search" placeholder="Search colors..." oninput="filterColors()" onfocus="showColorOptions()">
+                    <div class="search-options" id="color-options"></div>
+                </div>
+            </div>
+            <button class="button" onclick="getSelectedColor()">Get Selected Color</button>
+            <div id="searchable-result" class="result"></div>
+        </div>
+
+        <div class="section">
+            <h2>Dropdown Actions</h2>
+            <button class="button success" onclick="getAllDropdownValues()">Get All Dropdown Values</button>
+            <button class="button" onclick="resetAllDropdowns()">Reset All Dropdowns</button>
+            <div id="all-dropdowns-result" class="result"></div>
+        </div>
+    </div>
+
+    <script>
+        // Basic Select Functions
+        function handleBasicSelect(select) {
+            const result = document.getElementById('basic-select-result');
+            result.textContent = `Selected: ${select.value} (${select.options[select.selectedIndex].text})`;
+        }
+
+        function getBasicSelectValue() {
+            const select = document.getElementById('basic-select');
+            const result = document.getElementById('basic-select-result');
+            result.textContent = `Current value: ${select.value}\nSelected text: ${select.options[select.selectedIndex].text}`;
+        }
+
+        function setBasicSelectValue(value) {
+            const select = document.getElementById('basic-select');
+            select.value = value;
+            handleBasicSelect(select);
+        }
+
+        function clearBasicSelect() {
+            const select = document.getElementById('basic-select');
+            select.value = '';
+            document.getElementById('basic-select-result').textContent = 'Selection cleared';
+        }
+
+        // Multi-Select Functions
+        function getMultiSelectValues() {
+            const select = document.getElementById('multi-select');
+            const selected = Array.from(select.selectedOptions).map(option => option.value);
+            const result = document.getElementById('multi-select-result');
+            result.textContent = selected.length > 0 ? 'Selected languages: ' + selected.join(', ') : 'No languages selected';
+        }
+
+        function selectAllLanguages() {
+            const select = document.getElementById('multi-select');
+            Array.from(select.options).forEach(option => option.selected = true);
+            getMultiSelectValues();
+        }
+
+        function clearMultiSelect() {
+            const select = document.getElementById('multi-select');
+            Array.from(select.options).forEach(option => option.selected = false);
+            getMultiSelectValues();
+        }
+
+        // Custom Dropdown Functions
+        function toggleCustomDropdown() {
+            const content = document.getElementById('custom-dropdown-content');
+            content.classList.toggle('show');
+        }
+
+        function selectCustomOption(option) {
+            document.getElementById('custom-dropdown-text').textContent = option;
+            document.getElementById('custom-dropdown-content').classList.remove('show');
+        }
+
+        function getCustomDropdownValue() {
+            const selected = document.getElementById('custom-dropdown-text').textContent;
+            const result = document.getElementById('custom-dropdown-result');
+            result.textContent = selected !== 'Select an option...' ? `Selected: ${selected}` : 'No option selected';
+        }
+
+        // Checkbox Multi-Select Functions
+        function toggleCheckboxDropdown() {
+            const options = document.getElementById('checkbox-options');
+            const multiSelect = document.getElementById('checkbox-multi-select');
+            options.classList.toggle('show');
+            multiSelect.classList.toggle('open');
+        }
+
+        function updateCheckboxSelection() {
+            const checkboxes = document.querySelectorAll('#checkbox-options input[type="checkbox"]');
+            const selectedItems = document.getElementById('selected-items');
+            selectedItems.innerHTML = '';
+
+            checkboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    const item = document.createElement('div');
+                    item.className = 'selected-item';
+                    item.innerHTML = `${checkbox.value} <span class="remove" onclick="removeSkill('${checkbox.value}')">×</span>`;
+                    selectedItems.appendChild(item);
+                }
+            });
+        }
+
+        function removeSkill(skill) {
+            const checkbox = document.querySelector(`#checkbox-options input[value="${skill}"]`);
+            if (checkbox) {
+                checkbox.checked = false;
+                updateCheckboxSelection();
+            }
+        }
+
+        function getCheckboxSelection() {
+            const checkboxes = document.querySelectorAll('#checkbox-options input[type="checkbox"]:checked');
+            const selected = Array.from(checkboxes).map(cb => cb.value);
+            const result = document.getElementById('checkbox-result');
+            result.textContent = selected.length > 0 ? 'Selected skills: ' + selected.join(', ') : 'No skills selected';
+        }
+
+        function selectAllSkills() {
+            const checkboxes = document.querySelectorAll('#checkbox-options input[type="checkbox"]');
+            checkboxes.forEach(cb => cb.checked = true);
+            updateCheckboxSelection();
+        }
+
+        function clearAllSkills() {
+            const checkboxes = document.querySelectorAll('#checkbox-options input[type="checkbox"]');
+            checkboxes.forEach(cb => cb.checked = false);
+            updateCheckboxSelection();
+        }
+
+        // Cascading Dropdown Functions
+        const cascadingData = {
+            us: {
+                'CA': ['Los Angeles', 'San Francisco', 'San Diego'],
+                'NY': ['New York', 'Buffalo', 'Albany'],
+                'TX': ['Houston', 'Dallas', 'Austin']
+            },
+            ca: {
+                'ON': ['Toronto', 'Ottawa', 'Hamilton'],
+                'BC': ['Vancouver', 'Victoria', 'Surrey'],
+                'QC': ['Montreal', 'Quebec City', 'Laval']
+            },
+            au: {
+                'NSW': ['Sydney', 'Newcastle', 'Wollongong'],
+                'VIC': ['Melbourne', 'Geelong', 'Ballarat'],
+                'QLD': ['Brisbane', 'Gold Coast', 'Cairns']
+            }
+        };
+
+        function updateStateDropdown() {
+            const country = document.getElementById('country-select').value;
+            const stateSelect = document.getElementById('state-select');
+            const citySelect = document.getElementById('city-select');
+
+            stateSelect.innerHTML = '<option value="">Select State</option>';
+            citySelect.innerHTML = '<option value="">Select City</option>';
+
+            if (country && cascadingData[country]) {
+                Object.keys(cascadingData[country]).forEach(state => {
+                    const option = document.createElement('option');
+                    option.value = state;
+                    option.textContent = state;
+                    stateSelect.appendChild(option);
+                });
+            }
+        }
+
+        function updateCityDropdown() {
+            const country = document.getElementById('country-select').value;
+            const state = document.getElementById('state-select').value;
+            const citySelect = document.getElementById('city-select');
+
+            citySelect.innerHTML = '<option value="">Select City</option>';
+
+            if (country && state && cascadingData[country] && cascadingData[country][state]) {
+                cascadingData[country][state].forEach(city => {
+                    const option = document.createElement('option');
+                    option.value = city;
+                    option.textContent = city;
+                    citySelect.appendChild(option);
+                });
+            }
+        }
+
+        function getCascadingValues() {
+            const country = document.getElementById('country-select').value;
+            const state = document.getElementById('state-select').value;
+            const city = document.getElementById('city-select').value;
+            const result = document.getElementById('cascading-result');
+            
+            result.textContent = `Country: ${country || 'Not selected'}\nState: ${state || 'Not selected'}\nCity: ${city || 'Not selected'}`;
+        }
+
+        // Dynamic Dropdown Functions
+        const dynamicData = {
+            fruits: ['Apple', 'Banana', 'Orange', 'Grape', 'Strawberry'],
+            vegetables: ['Carrot', 'Broccoli', 'Spinach', 'Tomato', 'Cucumber'],
+            drinks: ['Water', 'Coffee', 'Tea', 'Juice', 'Soda']
+        };
+
+        function updateDynamicDropdown() {
+            const category = document.getElementById('category-select').value;
+            const itemsSelect = document.getElementById('dynamic-items');
+
+            itemsSelect.innerHTML = '<option value="">Select Item</option>';
+
+            if (category && dynamicData[category]) {
+                dynamicData[category].forEach(item => {
+                    const option = document.createElement('option');
+                    option.value = item.toLowerCase();
+                    option.textContent = item;
+                    itemsSelect.appendChild(option);
+                });
+            }
+        }
+
+        function getDynamicValues() {
+            const category = document.getElementById('category-select').value;
+            const item = document.getElementById('dynamic-items').value;
+            const result = document.getElementById('dynamic-result');
+            
+            result.textContent = `Category: ${category || 'Not selected'}\nItem: ${item || 'Not selected'}`;
+        }
+
+        // Searchable Dropdown Functions
+        const colors = ['Red', 'Blue', 'Green', 'Yellow', 'Purple', 'Orange', 'Pink', 'Brown', 'Black', 'White', 'Gray', 'Cyan', 'Magenta', 'Lime', 'Navy'];
+        let selectedColor = '';
+
+        function showColorOptions() {
+            const options = document.getElementById('color-options');
+            options.innerHTML = '';
+            
+            colors.forEach(color => {
+                const option = document.createElement('div');
+                option.className = 'search-option';
+                option.textContent = color;
+                option.onclick = () => selectColor(color);
+                options.appendChild(option);
+            });
+            
+            options.classList.add('show');
+        }
+
+        function filterColors() {
+            const searchTerm = document.getElementById('color-search').value.toLowerCase();
+            const options = document.getElementById('color-options');
+            options.innerHTML = '';
+            
+            const filteredColors = colors.filter(color => color.toLowerCase().includes(searchTerm));
+            
+            filteredColors.forEach(color => {
+                const option = document.createElement('div');
+                option.className = 'search-option';
+                option.textContent = color;
+                option.onclick = () => selectColor(color);
+                options.appendChild(option);
+            });
+            
+            options.classList.add('show');
+        }
+
+        function selectColor(color) {
+            selectedColor = color;
+            document.getElementById('color-search').value = color;
+            document.getElementById('color-options').classList.remove('show');
+        }
+
+        function getSelectedColor() {
+            const result = document.getElementById('searchable-result');
+            result.textContent = selectedColor ? `Selected color: ${selectedColor}` : 'No color selected';
+        }
+
+        // General Functions
+        function getAllDropdownValues() {
+            const result = document.getElementById('all-dropdowns-result');
+            const allValues = {
+                basicSelect: document.getElementById('basic-select').value,
+                multiSelect: Array.from(document.getElementById('multi-select').selectedOptions).map(o => o.value),
+                customDropdown: document.getElementById('custom-dropdown-text').textContent,
+                checkboxSkills: Array.from(document.querySelectorAll('#checkbox-options input[type="checkbox"]:checked')).map(cb => cb.value),
+                cascading: {
+                    country: document.getElementById('country-select').value,
+                    state: document.getElementById('state-select').value,
+                    city: document.getElementById('city-select').value
+                },
+                dynamic: {
+                    category: document.getElementById('category-select').value,
+                    item: document.getElementById('dynamic-items').value
+                },
+                searchableColor: selectedColor
+            };
+            
+            result.textContent = 'All dropdown values:\n' + JSON.stringify(allValues, null, 2);
+        }
+
+        function resetAllDropdowns() {
+            // Reset basic select
+            document.getElementById('basic-select').value = '';
+            
+            // Reset multi-select
+            Array.from(document.getElementById('multi-select').options).forEach(option => option.selected = false);
+            
+            // Reset custom dropdown
+            document.getElementById('custom-dropdown-text').textContent = 'Select an option...';
+            
+            // Reset checkbox multi-select
+            document.querySelectorAll('#checkbox-options input[type="checkbox"]').forEach(cb => cb.checked = false);
+            updateCheckboxSelection();
+            
+            // Reset cascading dropdowns
+            document.getElementById('country-select').value = '';
+            document.getElementById('state-select').innerHTML = '<option value="">Select State</option>';
+            document.getElementById('city-select').innerHTML = '<option value="">Select City</option>';
+            
+            // Reset dynamic dropdown
+            document.getElementById('category-select').value = '';
+            document.getElementById('dynamic-items').innerHTML = '<option value="">Select Category First</option>';
+            
+            // Reset searchable dropdown
+            document.getElementById('color-search').value = '';
+            selectedColor = '';
+            
+            // Clear all results
+            document.querySelectorAll('.result').forEach(result => result.textContent = '');
+            
+            document.getElementById('all-dropdowns-result').textContent = 'All dropdowns have been reset';
+        }
+
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!event.target.closest('.custom-dropdown')) {
+                document.getElementById('custom-dropdown-content').classList.remove('show');
+            }
+            if (!event.target.closest('.multi-select') && !event.target.closest('.multi-select-options')) {
+                document.getElementById('checkbox-options').classList.remove('show');
+                document.getElementById('checkbox-multi-select').classList.remove('open');
+            }
+            if (!event.target.closest('.searchable-dropdown')) {
+                document.getElementById('color-options').classList.remove('show');
+            }
+        });
+    </script>
+</body>
+</html>

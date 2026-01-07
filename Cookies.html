@@ -1,0 +1,1203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cookies - Selenium Training</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .section {
+            margin-bottom: 40px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .section h2 {
+            color: #555;
+            margin-bottom: 15px;
+        }
+        .button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+        .button.success {
+            background-color: #28a745;
+        }
+        .button.success:hover {
+            background-color: #218838;
+        }
+        .button.warning {
+            background-color: #ffc107;
+            color: #333;
+        }
+        .button.warning:hover {
+            background-color: #e0a800;
+        }
+        .button.danger {
+            background-color: #dc3545;
+        }
+        .button.danger:hover {
+            background-color: #c82333;
+        }
+        .button.secondary {
+            background-color: #6c757d;
+        }
+        .button.secondary:hover {
+            background-color: #545b62;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .cookie-form {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+        input[type="text"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .cookie-list {
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .cookie-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #e9ecef;
+            background-color: white;
+            margin-bottom: 5px;
+            border-radius: 4px;
+        }
+        .cookie-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        .cookie-info {
+            flex: 1;
+        }
+        .cookie-name {
+            font-weight: bold;
+            color: #333;
+        }
+        .cookie-value {
+            color: #666;
+            font-size: 12px;
+        }
+        .cookie-details {
+            color: #999;
+            font-size: 11px;
+            margin-top: 2px;
+        }
+        .cookie-actions {
+            display: flex;
+            gap: 5px;
+        }
+        .cookie-actions button {
+            padding: 4px 8px;
+            font-size: 12px;
+            margin: 0;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .stat-item {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+        }
+        .cookie-consent {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 4px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .cookie-consent h3 {
+            color: #856404;
+            margin-bottom: 15px;
+        }
+        .cookie-consent p {
+            color: #856404;
+            margin-bottom: 15px;
+        }
+        .consent-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        .session-info {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .session-info h3 {
+            color: #155724;
+            margin-bottom: 10px;
+        }
+        .session-info p {
+            color: #155724;
+            margin: 5px 0;
+        }
+        .cookie-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .cookie-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .cookie-card h3 {
+            color: #333;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 8px;
+        }
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 4px;
+            color: white;
+            font-weight: bold;
+            z-index: 1000;
+            display: none;
+            animation: slideIn 0.3s ease-out;
+        }
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        .notification.success {
+            background-color: #28a745;
+        }
+        .notification.error {
+            background-color: #dc3545;
+        }
+        .notification.warning {
+            background-color: #ffc107;
+            color: #333;
+        }
+        .notification.info {
+            background-color: #17a2b8;
+        }
+        .cookie-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        .cookie-table th,
+        .cookie-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .cookie-table th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+        .cookie-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Cookie Management Practice</h1>
+        
+        <div class="section">
+            <h2>Understanding Cookies</h2>
+            <p>Cookies are small pieces of data stored on the client side that help maintain state and user preferences across web sessions.</p>
+            
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-number" id="total-cookies">0</div>
+                    <div class="stat-label">Total Cookies</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="session-cookies">0</div>
+                    <div class="stat-label">Session Cookies</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="persistent-cookies">0</div>
+                    <div class="stat-label">Persistent Cookies</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="total-size">0</div>
+                    <div class="stat-label">Total Size (bytes)</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Cookie Management</h2>
+            
+            <div class="cookie-form">
+                <h3>Create New Cookie</h3>
+                <div class="form-group">
+                    <label for="cookie-name">Cookie Name:</label>
+                    <input type="text" id="cookie-name" placeholder="Enter cookie name">
+                </div>
+                <div class="form-group">
+                    <label for="cookie-value">Cookie Value:</label>
+                    <input type="text" id="cookie-value" placeholder="Enter cookie value">
+                </div>
+                <div class="form-group">
+                    <label for="cookie-expires">Expires (days):</label>
+                    <input type="number" id="cookie-expires" placeholder="Leave empty for session cookie" min="1">
+                </div>
+                <div class="form-group">
+                    <label for="cookie-path">Path:</label>
+                    <input type="text" id="cookie-path" placeholder="/" value="/">
+                </div>
+                <div class="form-group">
+                    <label for="cookie-domain">Domain:</label>
+                    <input type="text" id="cookie-domain" placeholder="Leave empty for current domain">
+                </div>
+                <div class="form-group">
+                    <label for="cookie-secure">Secure:</label>
+                    <select id="cookie-secure">
+                        <option value="false">False</option>
+                        <option value="true">True</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="cookie-samesite">SameSite:</label>
+                    <select id="cookie-samesite">
+                        <option value="">Not set</option>
+                        <option value="Strict">Strict</option>
+                        <option value="Lax">Lax</option>
+                        <option value="None">None</option>
+                    </select>
+                </div>
+                <button class="button success" onclick="createCookie()">Create Cookie</button>
+                <button class="button secondary" onclick="clearCookieForm()">Clear Form</button>
+            </div>
+            
+            <div style="margin: 20px 0;">
+                <button class="button" onclick="refreshCookieList()">Refresh List</button>
+                <button class="button warning" onclick="createSampleCookies()">Create Sample Cookies</button>
+                <button class="button danger" onclick="deleteAllCookies()">Delete All Cookies</button>
+            </div>
+            
+            <div class="cookie-list" id="cookie-list">
+                <h4>Current Cookies:</h4>
+                <div id="cookie-items">No cookies found</div>
+            </div>
+            
+            <div id="cookie-management-result" class="result"></div>
+        </div>
+
+        <div class="section">
+            <h2>Cookie Consent Banner</h2>
+            <p>Simulate a cookie consent banner commonly seen on websites.</p>
+            
+            <div class="cookie-consent" id="cookie-consent">
+                <h3>🍪 Cookie Consent</h3>
+                <p>We use cookies to enhance your experience. By continuing to visit this site you agree to our use of cookies.</p>
+                <div class="consent-buttons">
+                    <button class="button success" onclick="acceptCookies()">Accept All</button>
+                    <button class="button secondary" onclick="acceptEssentialCookies()">Essential Only</button>
+                    <button class="button warning" onclick="customizeCookies()">Customize</button>
+                    <button class="button danger" onclick="rejectCookies()">Reject</button>
+                </div>
+            </div>
+            
+            <div style="margin: 20px 0;">
+                <button class="button" onclick="showCookieConsent()">Show Consent Banner</button>
+                <button class="button secondary" onclick="hideCookieConsent()">Hide Consent Banner</button>
+            </div>
+            
+            <div id="consent-result" class="result"></div>
+        </div>
+
+        <div class="section">
+            <h2>Session Management</h2>
+            <p>Demonstrate how cookies are used for session management.</p>
+            
+            <div class="session-info" id="session-info" style="display: none;">
+                <h3>Active Session</h3>
+                <p><strong>Session ID:</strong> <span id="session-id">-</span></p>
+                <p><strong>User:</strong> <span id="session-user">-</span></p>
+                <p><strong>Login Time:</strong> <span id="session-login-time">-</span></p>
+                <p><strong>Last Activity:</strong> <span id="session-activity">-</span></p>
+                <p><strong>Expires:</strong> <span id="session-expires">-</span></p>
+            </div>
+            
+            <div style="margin: 20px 0;">
+                <button class="button success" onclick="createSession()">Create Session</button>
+                <button class="button" onclick="updateSession()">Update Session</button>
+                <button class="button warning" onclick="extendSession()">Extend Session</button>
+                <button class="button danger" onclick="destroySession()">Destroy Session</button>
+            </div>
+            
+            <div id="session-result" class="result"></div>
+        </div>
+
+        <div class="section">
+            <h2>Cookie Types and Use Cases</h2>
+            <div class="cookie-grid">
+                <div class="cookie-card">
+                    <h3>Authentication Cookies</h3>
+                    <p>Used to maintain user login sessions and authentication state.</p>
+                    <button class="button" onclick="createAuthCookie()">Create Auth Cookie</button>
+                </div>
+                
+                <div class="cookie-card">
+                    <h3>Preference Cookies</h3>
+                    <p>Store user preferences like language, theme, and settings.</p>
+                    <button class="button" onclick="createPreferenceCookie()">Create Preference Cookie</button>
+                </div>
+                
+                <div class="cookie-card">
+                    <h3>Analytics Cookies</h3>
+                    <p>Track user behavior and website usage statistics.</p>
+                    <button class="button" onclick="createAnalyticsCookie()">Create Analytics Cookie</button>
+                </div>
+                
+                <div class="cookie-card">
+                    <h3>Advertising Cookies</h3>
+                    <p>Used for targeted advertising and marketing campaigns.</p>
+                    <button class="button" onclick="createAdvertisingCookie()">Create Advertising Cookie</button>
+                </div>
+            </div>
+            
+            <div id="cookie-types-result" class="result"></div>
+        </div>
+
+        <div class="section">
+            <h2>Cookie Security</h2>
+            <p>Learn about cookie security attributes and best practices.</p>
+            
+            <div class="cookie-form">
+                <h3>Security Test Cookies</h3>
+                <div class="form-group">
+                    <label for="secure-cookie-name">Cookie Name:</label>
+                    <input type="text" id="secure-cookie-name" value="secure_test" placeholder="Enter secure cookie name">
+                </div>
+                <div class="form-group">
+                    <label for="secure-cookie-value">Cookie Value:</label>
+                    <input type="text" id="secure-cookie-value" value="sensitive_data" placeholder="Enter sensitive value">
+                </div>
+                <div style="margin: 15px 0;">
+                    <button class="button" onclick="createInsecureCookie()">Create Insecure Cookie</button>
+                    <button class="button success" onclick="createSecureCookie()">Create Secure Cookie</button>
+                    <button class="button warning" onclick="createHttpOnlyCookie()">Create HttpOnly Cookie</button>
+                    <button class="button danger" onclick="createSameSiteCookie()">Create SameSite Cookie</button>
+                </div>
+            </div>
+            
+            <table class="cookie-table">
+                <thead>
+                    <tr>
+                        <th>Security Attribute</th>
+                        <th>Description</th>
+                        <th>Protection</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Secure</strong></td>
+                        <td>Cookie only sent over HTTPS connections</td>
+                        <td>Protects against man-in-the-middle attacks</td>
+                    </tr>
+                    <tr>
+                        <td><strong>HttpOnly</strong></td>
+                        <td>Cookie not accessible via JavaScript</td>
+                        <td>Protects against XSS attacks</td>
+                    </tr>
+                    <tr>
+                        <td><strong>SameSite</strong></td>
+                        <td>Controls cross-site requests</td>
+                        <td>Protects against CSRF attacks</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div id="security-result" class="result"></div>
+        </div>
+
+        <div class="section">
+            <h2>Cookie Testing Scenarios</h2>
+            
+            <div style="margin: 20px 0;">
+                <button class="button" onclick="testCookieCreation()">Test Cookie Creation</button>
+                <button class="button warning" onclick="testCookieExpiration()">Test Cookie Expiration</button>
+                <button class="button success" onclick="testCookieUpdate()">Test Cookie Update</button>
+                <button class="button danger" onclick="testCookieDeletion()">Test Cookie Deletion</button>
+            </div>
+            
+            <div style="margin: 20px 0;">
+                <button class="button" onclick="testCookieSizeLimits()">Test Size Limits</button>
+                <button class="button warning" onclick="testCookieEncoding()">Test Character Encoding</button>
+                <button class="button success" onclick="testDomainHandling()">Test Domain Handling</button>
+                <button class="button secondary" onclick="testPathHandling()">Test Path Handling</button>
+            </div>
+            
+            <div id="testing-result" class="result"></div>
+        </div>
+
+        <div class="section">
+            <h2>Cookie Examples</h2>
+            
+            <div style="background-color: #f8f9fa; padding: 15px; border-radius: 4px; margin-bottom: 15px;">
+                <strong>Selenium Cookie Example:</strong><br>
+                // Add a cookie<br>
+                Cookie cookie = new Cookie("session_id", "abc123", "/", null, null, true, true);<br>
+                driver.manage().addCookie(cookie);<br><br>
+                // Get all cookies<br>
+                Set&lt;Cookie&gt; cookies = driver.manage().getCookies();<br><br>
+                // Delete a cookie<br>
+                driver.manage().deleteCookieNamed("session_id");<br><br>
+                // Delete all cookies<br>
+                driver.manage().deleteAllCookies();
+            </div>
+            
+            <div style="background-color: #f8f9fa; padding: 15px; border-radius: 4px;">
+                <strong>JavaScript Cookie Example:</strong><br>
+                // Set cookie<br>
+                document.cookie = "username=John Doe; expires=Thu, 18 Dec 2025 12:00:00 UTC; path=/";<br><br>
+                // Get cookie<br>
+                const cookies = document.cookie;<br><br>
+                // Delete cookie<br>
+                document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script>
+        // Cookie management functions
+        function createCookie() {
+            const name = document.getElementById('cookie-name').value;
+            const value = document.getElementById('cookie-value').value;
+            const expires = document.getElementById('cookie-expires').value;
+            const path = document.getElementById('cookie-path').value;
+            const domain = document.getElementById('cookie-domain').value;
+            const secure = document.getElementById('cookie-secure').value;
+            const sameSite = document.getElementById('cookie-samesite').value;
+            
+            if (!name || !value) {
+                showNotification('Cookie name and value are required', 'error');
+                return;
+            }
+            
+            let cookieString = `${name}=${encodeURIComponent(value)}`;
+            
+            if (expires) {
+                const date = new Date();
+                date.setTime(date.getTime() + (expires * 24 * 60 * 60 * 1000));
+                cookieString += `; expires=${date.toUTCString()}`;
+            }
+            
+            if (path) {
+                cookieString += `; path=${path}`;
+            }
+            
+            if (domain) {
+                cookieString += `; domain=${domain}`;
+            }
+            
+            if (secure === 'true') {
+                cookieString += '; secure';
+            }
+            
+            if (sameSite) {
+                cookieString += `; SameSite=${sameSite}`;
+            }
+            
+            document.cookie = cookieString;
+            
+            showNotification('Cookie created successfully', 'success');
+            refreshCookieList();
+            logCookieManagement(`Created cookie: ${name}`);
+        }
+
+        function clearCookieForm() {
+            document.getElementById('cookie-name').value = '';
+            document.getElementById('cookie-value').value = '';
+            document.getElementById('cookie-expires').value = '';
+            document.getElementById('cookie-path').value = '/';
+            document.getElementById('cookie-domain').value = '';
+            document.getElementById('cookie-secure').value = 'false';
+            document.getElementById('cookie-samesite').value = '';
+            
+            logCookieManagement('Cookie form cleared');
+        }
+
+        function refreshCookieList() {
+            const cookies = document.cookie.split(';').filter(cookie => cookie.trim());
+            const cookieItems = document.getElementById('cookie-items');
+            
+            if (cookies.length === 0 || (cookies.length === 1 && cookies[0] === '')) {
+                cookieItems.innerHTML = 'No cookies found';
+                updateStats();
+                return;
+            }
+            
+            cookieItems.innerHTML = '';
+            
+            cookies.forEach(cookie => {
+                const [name, value] = cookie.trim().split('=');
+                const cookieItem = document.createElement('div');
+                cookieItem.className = 'cookie-item';
+                cookieItem.innerHTML = `
+                    <div class="cookie-info">
+                        <div class="cookie-name">${name}</div>
+                        <div class="cookie-value">${decodeURIComponent(value)}</div>
+                        <div class="cookie-details">Raw: ${cookie}</div>
+                    </div>
+                    <div class="cookie-actions">
+                        <button class="button" onclick="viewCookieDetails('${name}')">View</button>
+                        <button class="button warning" onclick="editCookie('${name}')">Edit</button>
+                        <button class="button danger" onclick="deleteCookie('${name}')">Delete</button>
+                    </div>
+                `;
+                cookieItems.appendChild(cookieItem);
+            });
+            
+            updateStats();
+        }
+
+        function updateStats() {
+            const cookies = document.cookie.split(';').filter(cookie => cookie.trim());
+            const totalCookies = cookies.length === 1 && cookies[0] === '' ? 0 : cookies.length;
+            
+            let sessionCookies = 0;
+            let persistentCookies = 0;
+            let totalSize = 0;
+            
+            cookies.forEach(cookie => {
+                totalSize += cookie.length;
+                
+                // Simple check for session vs persistent cookies
+                if (!cookie.includes('expires=')) {
+                    sessionCookies++;
+                } else {
+                    persistentCookies++;
+                }
+            });
+            
+            document.getElementById('total-cookies').textContent = totalCookies;
+            document.getElementById('session-cookies').textContent = sessionCookies;
+            document.getElementById('persistent-cookies').textContent = persistentCookies;
+            document.getElementById('total-size').textContent = totalSize;
+        }
+
+        function createSampleCookies() {
+            const sampleCookies = [
+                { name: 'session_id', value: generateSessionId(), expires: 1 },
+                { name: 'user_pref', value: 'dark_theme', expires: 30 },
+                { name: 'language', value: 'en', expires: 365 },
+                { name: 'last_visit', value: new Date().toISOString(), expires: 7 },
+                { name: 'cart_items', value: '3', expires: 1 }
+            ];
+            
+            sampleCookies.forEach(cookie => {
+                let cookieString = `${cookie.name}=${encodeURIComponent(cookie.value)}`;
+                
+                if (cookie.expires) {
+                    const date = new Date();
+                    date.setTime(date.getTime() + (cookie.expires * 24 * 60 * 60 * 1000));
+                    cookieString += `; expires=${date.toUTCString()}`;
+                }
+                
+                cookieString += '; path=/';
+                document.cookie = cookieString;
+            });
+            
+            showNotification('Sample cookies created', 'success');
+            refreshCookieList();
+            logCookieManagement('Created sample cookies');
+        }
+
+        function deleteAllCookies() {
+            if (confirm('Are you sure you want to delete all cookies?')) {
+                const cookies = document.cookie.split(';');
+                
+                cookies.forEach(cookie => {
+                    const name = cookie.split('=')[0].trim();
+                    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/`;
+                });
+                
+                showNotification('All cookies deleted', 'success');
+                refreshCookieList();
+                logCookieManagement('All cookies deleted');
+            }
+        }
+
+        function viewCookieDetails(name) {
+            const cookies = document.cookie.split(';');
+            let targetCookie = null;
+            
+            for (let cookie of cookies) {
+                const [cookieName, cookieValue] = cookie.trim().split('=');
+                if (cookieName === name) {
+                    targetCookie = cookie;
+                    break;
+                }
+            }
+            
+            if (targetCookie) {
+                alert(`Cookie Details:\n\nName: ${name}\nValue: ${decodeURIComponent(targetCookie.split('=')[1])}\nFull Cookie: ${targetCookie}`);
+            }
+        }
+
+        function editCookie(name) {
+            const newValue = prompt(`Enter new value for cookie "${name}":`);
+            if (newValue !== null) {
+                // Get existing cookie attributes
+                const cookies = document.cookie.split(';');
+                let existingCookie = null;
+                
+                for (let cookie of cookies) {
+                    if (cookie.trim().startsWith(name + '=')) {
+                        existingCookie = cookie.trim();
+                        break;
+                    }
+                }
+                
+                if (existingCookie) {
+                    // Parse existing cookie to preserve attributes
+                    const parts = existingCookie.split(';');
+                    let cookieString = `${name}=${encodeURIComponent(newValue)}`;
+                    
+                    for (let i = 1; i < parts.length; i++) {
+                        if (!parts[i].trim().startsWith('expires=')) {
+                            cookieString += `; ${parts[i].trim()}`;
+                        }
+                    }
+                    
+                    document.cookie = cookieString;
+                    showNotification('Cookie updated successfully', 'success');
+                    refreshCookieList();
+                    logCookieManagement(`Updated cookie: ${name}`);
+                }
+            }
+        }
+
+        function deleteCookie(name) {
+            if (confirm(`Are you sure you want to delete the cookie "${name}"?`)) {
+                document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/`;
+                showNotification('Cookie deleted successfully', 'success');
+                refreshCookieList();
+                logCookieManagement(`Deleted cookie: ${name}`);
+            }
+        }
+
+        // Cookie consent functions
+        function showCookieConsent() {
+            document.getElementById('cookie-consent').style.display = 'block';
+            logConsent('Cookie consent banner shown');
+        }
+
+        function hideCookieConsent() {
+            document.getElementById('cookie-consent').style.display = 'none';
+            logConsent('Cookie consent banner hidden');
+        }
+
+        function acceptCookies() {
+            document.cookie = 'cookie_consent=all; path=/; max-age=31536000';
+            document.cookie = 'analytics_enabled=true; path=/; max-age=31536000';
+            document.cookie = 'advertising_enabled=true; path=/; max-age=31536000';
+            
+            hideCookieConsent();
+            showNotification('All cookies accepted', 'success');
+            refreshCookieList();
+            logConsent('User accepted all cookies');
+        }
+
+        function acceptEssentialCookies() {
+            document.cookie = 'cookie_consent=essential; path=/; max-age=31536000';
+            document.cookie = 'analytics_enabled=false; path=/; max-age=31536000';
+            document.cookie = 'advertising_enabled=false; path=/; max-age=31536000';
+            
+            hideCookieConsent();
+            showNotification('Essential cookies accepted', 'success');
+            refreshCookieList();
+            logConsent('User accepted essential cookies only');
+        }
+
+        function customizeCookies() {
+            const analytics = confirm('Enable analytics cookies?');
+            const advertising = confirm('Enable advertising cookies?');
+            
+            document.cookie = 'cookie_consent=custom; path=/; max-age=31536000';
+            document.cookie = `analytics_enabled=${analytics}; path=/; max-age=31536000`;
+            document.cookie = `advertising_enabled=${advertising}; path=/; max-age=31536000`;
+            
+            hideCookieConsent();
+            showNotification('Cookie preferences saved', 'success');
+            refreshCookieList();
+            logConsent(`User customized cookies: analytics=${analytics}, advertising=${advertising}`);
+        }
+
+        function rejectCookies() {
+            document.cookie = 'cookie_consent=reject; path=/; max-age=31536000';
+            document.cookie = 'analytics_enabled=false; path=/; max-age=31536000';
+            document.cookie = 'advertising_enabled=false; path=/; max-age=31536000';
+            
+            hideCookieConsent();
+            showNotification('All cookies rejected', 'warning');
+            refreshCookieList();
+            logConsent('User rejected all cookies');
+        }
+
+        // Session management functions
+        function createSession() {
+            const sessionId = generateSessionId();
+            const loginTime = new Date();
+            const expires = new Date(loginTime.getTime() + 30 * 60 * 1000); // 30 minutes
+            
+            document.cookie = `session_id=${sessionId}; path=/; expires=${expires.toUTCString()}`;
+            document.cookie = `session_user=TestUser; path=/; expires=${expires.toUTCString()}`;
+            document.cookie = `session_login=${loginTime.toISOString()}; path=/; expires=${expires.toUTCString()}`;
+            
+            updateSessionDisplay();
+            showNotification('Session created successfully', 'success');
+            logSession(`Session created: ${sessionId}`);
+        }
+
+        function updateSession() {
+            const sessionId = getCookieValue('session_id');
+            if (sessionId) {
+                const now = new Date();
+                document.cookie = `session_activity=${now.toISOString()}; path=/`;
+                
+                updateSessionDisplay();
+                showNotification('Session updated', 'success');
+                logSession(`Session updated: ${sessionId}`);
+            } else {
+                showNotification('No active session found', 'warning');
+            }
+        }
+
+        function extendSession() {
+            const sessionId = getCookieValue('session_id');
+            if (sessionId) {
+                const newExpires = new Date(Date.now() + 30 * 60 * 1000);
+                
+                // Update all session cookies with new expiration
+                const sessionCookies = ['session_id', 'session_user', 'session_login'];
+                sessionCookies.forEach(name => {
+                    const value = getCookieValue(name);
+                    if (value) {
+                        document.cookie = `${name}=${value}; path=/; expires=${newExpires.toUTCString()}`;
+                    }
+                });
+                
+                updateSessionDisplay();
+                showNotification('Session extended by 30 minutes', 'success');
+                logSession(`Session extended: ${sessionId}`);
+            } else {
+                showNotification('No active session found', 'warning');
+            }
+        }
+
+        function destroySession() {
+            const sessionId = getCookieValue('session_id');
+            if (sessionId) {
+                // Delete all session cookies
+                const sessionCookies = ['session_id', 'session_user', 'session_login', 'session_activity'];
+                sessionCookies.forEach(name => {
+                    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/`;
+                });
+                
+                document.getElementById('session-info').style.display = 'none';
+                showNotification('Session destroyed', 'success');
+                refreshCookieList();
+                logSession(`Session destroyed: ${sessionId}`);
+            } else {
+                showNotification('No active session found', 'warning');
+            }
+        }
+
+        function updateSessionDisplay() {
+            const sessionId = getCookieValue('session_id');
+            const user = getCookieValue('session_user');
+            const loginTime = getCookieValue('session_login');
+            const activity = getCookieValue('session_activity');
+            
+            if (sessionId) {
+                document.getElementById('session-id').textContent = sessionId;
+                document.getElementById('session-user').textContent = user || 'Unknown';
+                document.getElementById('session-login-time').textContent = loginTime ? new Date(loginTime).toLocaleString() : 'Unknown';
+                document.getElementById('session-activity').textContent = activity ? new Date(activity).toLocaleString() : 'Unknown';
+                
+                // Calculate expiration
+                const expires = new Date(Date.now() + 30 * 60 * 1000);
+                document.getElementById('session-expires').textContent = expires.toLocaleString();
+                
+                document.getElementById('session-info').style.display = 'block';
+            } else {
+                document.getElementById('session-info').style.display = 'none';
+            }
+        }
+
+        // Cookie type functions
+        function createAuthCookie() {
+            const token = generateSessionId();
+            const expires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+            
+            document.cookie = `auth_token=${token}; path=/; expires=${expires.toUTCString()}; secure; HttpOnly; SameSite=Strict`;
+            
+            showNotification('Authentication cookie created', 'success');
+            refreshCookieList();
+            logCookieTypes('Created authentication cookie');
+        }
+
+        function createPreferenceCookie() {
+            const preferences = {
+                theme: 'dark',
+                language: 'en',
+                fontSize: 'medium',
+                notifications: true
+            };
+            
+            const expires = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000); // 1 year
+            document.cookie = `user_preferences=${encodeURIComponent(JSON.stringify(preferences))}; path=/; expires=${expires.toUTCString()}`;
+            
+            showNotification('Preference cookie created', 'success');
+            refreshCookieList();
+            logCookieTypes('Created preference cookie');
+        }
+
+        function createAnalyticsCookie() {
+            const analyticsData = {
+                userId: generateSessionId(),
+                sessionStart: new Date().toISOString(),
+                pageViews: 1,
+                lastPage: window.location.pathname
+            };
+            
+            document.cookie = `analytics_data=${encodeURIComponent(JSON.stringify(analyticsData))}; path=/`;
+            
+            showNotification('Analytics cookie created', 'success');
+            refreshCookieList();
+            logCookieTypes('Created analytics cookie');
+        }
+
+        function createAdvertisingCookie() {
+            const adData = {
+                userId: generateSessionId(),
+                interests: ['technology', 'programming'],
+                lastAdView: new Date().toISOString(),
+                adFrequency: 3
+            };
+            
+            const expires = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days
+            document.cookie = `advertising_data=${encodeURIComponent(JSON.stringify(adData))}; path=/; expires=${expires.toUTCString()}`;
+            
+            showNotification('Advertising cookie created', 'success');
+            refreshCookieList();
+            logCookieTypes('Created advertising cookie');
+        }
+
+        // Security functions
+        function createInsecureCookie() {
+            const name = document.getElementById('secure-cookie-name').value;
+            const value = document.getElementById('secure-cookie-value').value;
+            
+            document.cookie = `${name}=${value}; path=/`;
+            
+            showNotification('Insecure cookie created', 'warning');
+            refreshCookieList();
+            logSecurity(`Created insecure cookie: ${name}`);
+        }
+
+        function createSecureCookie() {
+            const name = document.getElementById('secure-cookie-name').value;
+            const value = document.getElementById('secure-cookie-value').value;
+            const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
+            
+            document.cookie = `${name}=${value}; path=/; expires=${expires.toUTCString()}; secure`;
+            
+            showNotification('Secure cookie created', 'success');
+            refreshCookieList();
+            logSecurity(`Created secure cookie: ${name}`);
+        }
+
+        function createHttpOnlyCookie() {
+            const name = document.getElementById('secure-cookie-name').value;
+            const value = document.getElementById('secure-cookie-value').value;
+            const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
+            
+            document.cookie = `${name}=${value}; path=/; expires=${expires.toUTCString()}; HttpOnly`;
+            
+            showNotification('HttpOnly cookie created (note: cannot be accessed via JavaScript)', 'success');
+            refreshCookieList();
+            logSecurity(`Created HttpOnly cookie: ${name}`);
+        }
+
+        function createSameSiteCookie() {
+            const name = document.getElementById('secure-cookie-name').value;
+            const value = document.getElementById('secure-cookie-value').value;
+            const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
+            
+            document.cookie = `${name}=${value}; path=/; expires=${expires.toUTCString()}; SameSite=Strict`;
+            
+            showNotification('SameSite cookie created', 'success');
+            refreshCookieList();
+            logSecurity(`Created SameSite cookie: ${name}`);
+        }
+
+        // Testing functions
+        function testCookieCreation() {
+            logTesting('Testing cookie creation...');
+            
+            for (let i = 1; i <= 10; i++) {
+                document.cookie = `test_cookie_${i}=value_${i}; path=/`;
+            }
+            
+            refreshCookieList();
+            logTesting('Cookie creation test completed - 10 test cookies created');
+        }
+
+        function testCookieExpiration() {
+            logTesting('Testing cookie expiration...');
+            
+            // Create cookie that expires in 5 seconds
+            const expires = new Date(Date.now() + 5 * 1000);
+            document.cookie = `expiration_test=temp_value; path=/; expires=${expires.toUTCString()}`;
+            
+            refreshCookieList();
+            showNotification('Expiration test cookie created (expires in 5 seconds)', 'info');
+            
+            setTimeout(() => {
+                refreshCookieList();
+                logTesting('Cookie expiration test completed - cookie should be expired');
+            }, 6000);
+        }
+
+        function testCookieUpdate() {
+            logTesting('Testing cookie update...');
+            
+            document.cookie = 'update_test=original_value; path=/';
+            refreshCookieList();
+            
+            setTimeout(() => {
+                document.cookie = 'update_test=updated_value; path=/';
+                refreshCookieList();
+                logTesting('Cookie update test completed');
+            }, 1000);
+        }
+
+        function testCookieDeletion() {
+            logTesting('Testing cookie deletion...');
+            
+            document.cookie = 'deletion_test=temp_value; path=/';
+            refreshCookieList();
+            
+            setTimeout(() => {
+                document.cookie = 'deletion_test=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';
+                refreshCookieList();
+                logTesting('Cookie deletion test completed');
+            }, 1000);
+        }
+
+        function testCookieSizeLimits() {
+            logTesting('Testing cookie size limits...');
+            
+            // Create a large cookie (4KB is typical limit)
+            const largeValue = 'x'.repeat(4000);
+            document.cookie = `size_test=${largeValue}; path=/`;
+            
+            refreshCookieList();
+            logTesting('Cookie size limit test completed');
+        }
+
+        function testCookieEncoding() {
+            logTesting('Testing cookie character encoding...');
+            
+            const testValues = [
+                'simple_value',
+                'value with spaces',
+                'value+with+plus',
+                'value&with&ampersand',
+                'value=with=equals',
+                'value;with;semicolon',
+                'value/with/slashes',
+                'value"with"quotes',
+                '中文测试',
+                '🍪 emoji test'
+            ];
+            
+            testValues.forEach((value, index) => {
+                document.cookie = `encoding_test_${index}=${encodeURIComponent(value)}; path=/`;
+            });
+            
+            refreshCookieList();
+            logTesting('Cookie encoding test completed');
+        }
+
+        function testDomainHandling() {
+            logTesting('Testing domain handling...');
+            
+            // These will only work if the domain matches
+            document.cookie = `domain_test=value; path=/; domain=${window.location.hostname}`;
+            
+            refreshCookieList();
+            logTesting('Domain handling test completed');
+        }
+
+        function testPathHandling() {
+            logTesting('Testing path handling...');
+            
+            document.cookie = `path_test_root=value; path=/`;
+            document.cookie = `path_test_current=value; path=${window.location.pathname}`;
+            
+            refreshCookieList();
+            logTesting('Path handling test completed');
+        }
+
+        // Utility functions
+        function generateSessionId() {
+            return 'sess_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
+        }
+
+        function getCookieValue(name) {
+            const cookies = document.cookie.split(';');
+            for (let cookie of cookies) {
+                const [cookieName, cookieValue] = cookie.trim().split('=');
+                if (cookieName === name) {
+                    return decodeURIComponent(cookieValue);
+                }
+            }
+            return null;
+        }
+
+        function showNotification(message, type) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.style.display = 'block';
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+
+        function logCookieManagement(message) {
+            const result = document.getElementById('cookie-management-result');
+            result.textContent += `[${new Date().toLocaleTimeString()}] ${message}\n`;
+        }
+
+        function logConsent(message) {
+            const result = document.getElementById('consent-result');
+            result.textContent += `[${new Date().toLocaleTimeString()}] ${message}\n`;
+        }
+
+        function logSession(message) {
+            const result = document.getElementById('session-result');
+            result.textContent += `[${new Date().toLocaleTimeString()}] ${message}\n`;
+        }
+
+        function logCookieTypes(message) {
+            const result = document.getElementById('cookie-types-result');
+            result.textContent += `[${new Date().toLocaleTimeString()}] ${message}\n`;
+        }
+
+        function logSecurity(message) {
+            const result = document.getElementById('security-result');
+            result.textContent += `[${new Date().toLocaleTimeString()}] ${message}\n`;
+        }
+
+        function logTesting(message) {
+            const result = document.getElementById('testing-result');
+            result.textContent += `[${new Date().toLocaleTimeString()}] ${message}\n`;
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            refreshCookieList();
+            updateSessionDisplay();
+            logCookieManagement('Cookie management page initialized');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1009 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Playwright User-Facing Locators Lab</title>
+
+  <style>
+    :root{
+      --bg0:#070a12;
+      --bg1:#0c1022;
+      --card:rgba(255,255,255,.06);
+      --card2:rgba(255,255,255,.08);
+      --border:rgba(120, 255, 214,.18);
+      --border2:rgba(120, 255, 214,.28);
+      --text:rgba(255,255,255,.92);
+      --muted:rgba(255,255,255,.68);
+      --brand:#78ffd6;
+      --brand2:#00c6ff;
+      --warn:#ffcc66;
+      --ok:#4dff8a;
+      --bad:#ff5c7a;
+      --shadow: 0 20px 60px rgba(0,0,0,.55);
+      --radius: 18px;
+      --radius2: 14px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:var(--sans);
+      color:var(--text);
+      background:
+        radial-gradient(1200px 600px at 10% 10%, rgba(120,255,214,.12), transparent 60%),
+        radial-gradient(900px 500px at 90% 15%, rgba(0,198,255,.12), transparent 60%),
+        radial-gradient(700px 500px at 50% 90%, rgba(255,92,122,.10), transparent 65%),
+        linear-gradient(180deg, var(--bg0), var(--bg1));
+      overflow-x:hidden;
+    }
+
+    /* subtle animated grid */
+    .grid{
+      position:fixed; inset:0;
+      background-image:
+        linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
+      background-size: 60px 60px;
+      opacity:.12;
+      pointer-events:none;
+      mask-image: radial-gradient(circle at 50% 35%, black 0%, transparent 70%);
+    }
+
+    header{
+      position:sticky; top:0;
+      backdrop-filter: blur(14px);
+      background: linear-gradient(180deg, rgba(7,10,18,.85), rgba(7,10,18,.35));
+      border-bottom:1px solid rgba(255,255,255,.08);
+      z-index:50;
+    }
+
+    .wrap{max-width:1100px; margin:0 auto; padding:18px 18px;}
+    .topbar{
+      display:flex; gap:16px; align-items:center; justify-content:space-between;
+    }
+    .brand{
+      display:flex; gap:12px; align-items:center;
+    }
+    .logo{
+      width:38px; height:38px; border-radius:12px;
+      background: linear-gradient(135deg, var(--brand), var(--brand2));
+      box-shadow: 0 12px 30px rgba(120,255,214,.25);
+    }
+    .title{
+      line-height:1.1;
+    }
+    .title h1{
+      margin:0;
+      font-size: 18px;
+      letter-spacing:.2px;
+    }
+    .title p{
+      margin:4px 0 0;
+      color:var(--muted);
+      font-size: 12.5px;
+    }
+
+    .pill{
+      font-family:var(--mono);
+      font-size: 12px;
+      color: rgba(255,255,255,.85);
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
+      padding:8px 10px;
+      border-radius: 999px;
+      display:flex; gap:10px; align-items:center;
+    }
+    .pill b{color:var(--brand)}
+    .pill .dot{
+      width:8px; height:8px; border-radius:50%;
+      background: var(--ok);
+      box-shadow: 0 0 0 3px rgba(77,255,138,.15);
+    }
+
+    main{padding:26px 18px 80px;}
+    .hero{
+      max-width:1100px; margin:0 auto;
+      display:grid; grid-template-columns: 1.3fr .7fr; gap:18px;
+      align-items:stretch;
+    }
+    @media (max-width: 900px){
+      .hero{grid-template-columns:1fr}
+    }
+
+    .card{
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .card .inner{padding:18px}
+    .hero h2{
+      margin:0 0 8px;
+      font-size: 26px;
+      letter-spacing:.2px;
+      background: linear-gradient(90deg, var(--brand), #b6fff0, var(--brand2));
+      -webkit-background-clip:text;
+      background-clip:text;
+      color:transparent;
+    }
+    .hero p{margin:0; color:var(--muted); line-height:1.55}
+    .hero .note{
+      margin-top:12px;
+      padding:12px 14px;
+      border-radius: 14px;
+      border:1px dashed rgba(120,255,214,.30);
+      background: rgba(120,255,214,.06);
+      color: rgba(255,255,255,.82);
+      font-size: 13px;
+    }
+
+    .quick{
+      display:grid; gap:12px;
+    }
+    .quick .q{
+      padding:14px;
+      border-radius: 16px;
+      background: var(--card2);
+      border: 1px solid rgba(255,255,255,.12);
+    }
+    .quick .q h3{margin:0 0 6px; font-size: 14px}
+    .quick .q p{margin:0; font-size: 12.5px; color:var(--muted)}
+    .kbd{
+      font-family:var(--mono);
+      font-size: 12px;
+      padding:2px 6px;
+      border-radius:8px;
+      border:1px solid rgba(255,255,255,.18);
+      background: rgba(0,0,0,.20);
+      color: rgba(255,255,255,.86);
+    }
+
+    /* sections */
+    .sections{max-width:1100px; margin:18px auto 0; display:grid; gap:14px;}
+    .sec{
+      background: rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius: var(--radius);
+      box-shadow: 0 18px 55px rgba(0,0,0,.45);
+      overflow:hidden;
+    }
+    .secHead{
+      padding:16px 18px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+    }
+    .secHead .left{
+      display:flex; gap:12px; align-items:flex-start;
+    }
+    .badge{
+      font-family: var(--mono);
+      font-size: 12px;
+      padding:6px 10px;
+      border-radius: 999px;
+      border:1px solid rgba(120,255,214,.28);
+      color: rgba(255,255,255,.86);
+      background: rgba(120,255,214,.06);
+      white-space:nowrap;
+    }
+    .secHead h3{
+      margin:0;
+      font-size: 16px;
+    }
+    .secHead p{
+      margin:3px 0 0;
+      color:var(--muted);
+      font-size: 12.5px;
+    }
+
+    .secBody{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:14px;
+      padding:16px 18px 18px;
+    }
+    @media (max-width: 900px){
+      .secBody{grid-template-columns:1fr}
+    }
+
+    .panel{
+      background: rgba(255,255,255,.045);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius: var(--radius2);
+      padding:14px;
+    }
+    .panel h4{
+      margin:0 0 10px;
+      font-size: 13px;
+      color: rgba(255,255,255,.90);
+      letter-spacing:.2px;
+    }
+    .steps{
+      margin:0;
+      padding-left:18px;
+      color: rgba(255,255,255,.84);
+      line-height: 1.55;
+      font-size: 13px;
+    }
+    .steps li{margin:8px 0}
+    .hint{
+      margin-top:10px;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: rgba(255,255,255,.78);
+      background: rgba(0,0,0,.22);
+      border:1px solid rgba(255,255,255,.14);
+      padding:10px 10px;
+      border-radius: 12px;
+      overflow:auto;
+    }
+
+    /* form controls */
+    .row{display:grid; grid-template-columns: 1fr 1fr; gap:10px}
+    @media (max-width: 520px){ .row{grid-template-columns:1fr} }
+
+    label{
+      display:block;
+      font-size: 13px;
+      color: rgba(255,255,255,.86);
+      margin: 8px 0 6px;
+      font-weight: 600;
+    }
+    input[type="text"], input[type="email"], input[type="search"], textarea, select{
+      width:100%;
+      padding:12px 12px;
+      border-radius: 12px;
+      border:1px solid rgba(120,255,214,.18);
+      background: rgba(0,0,0,.20);
+      color: rgba(255,255,255,.92);
+      outline:none;
+      transition: .2s ease;
+    }
+    input:focus, textarea:focus, select:focus{
+      border-color: rgba(120,255,214,.45);
+      box-shadow: 0 0 0 4px rgba(120,255,214,.12);
+    }
+    textarea{min-height: 96px; resize: vertical}
+
+    .actions{display:flex; gap:10px; flex-wrap:wrap; margin-top:10px}
+    button{
+      border:0;
+      cursor:pointer;
+      padding: 11px 14px;
+      border-radius: 999px;
+      font-weight: 700;
+      color: #061018;
+      background: linear-gradient(135deg, var(--brand), var(--brand2));
+      box-shadow: 0 12px 28px rgba(0,198,255,.14);
+      transition: transform .15s ease, filter .15s ease;
+    }
+    button:hover{transform: translateY(-1px); filter: brightness(1.05)}
+    button.secondary{
+      background: rgba(255,255,255,.08);
+      color: rgba(255,255,255,.90);
+      border: 1px solid rgba(255,255,255,.14);
+      box-shadow:none;
+    }
+    button.danger{
+      background: rgba(255,92,122,.14);
+      color: rgba(255,255,255,.92);
+      border: 1px solid rgba(255,92,122,.35);
+      box-shadow:none;
+    }
+
+    .toast{
+      margin-top:10px;
+      padding:10px 12px;
+      border-radius: 12px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.25);
+      color: rgba(255,255,255,.86);
+      font-size: 13px;
+      display:none;
+    }
+    .toast.ok{border-color: rgba(77,255,138,.35); background: rgba(77,255,138,.10)}
+    .toast.bad{border-color: rgba(255,92,122,.35); background: rgba(255,92,122,.10)}
+    .toast.warn{border-color: rgba(255,204,102,.35); background: rgba(255,204,102,.10)}
+    .mono{font-family: var(--mono)}
+
+    .imgWrap{
+      display:flex; gap:12px; align-items:center; flex-wrap:wrap;
+    }
+    .imgCard{
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.20);
+      padding:10px;
+      display:flex; gap:10px; align-items:center;
+    }
+    .imgCard img{
+      width:62px; height:62px; border-radius: 14px;
+      border:1px solid rgba(120,255,214,.25);
+      background: rgba(255,255,255,.05);
+      display:block;
+    }
+    .imgCard .meta{
+      line-height:1.2;
+      font-size: 12.5px;
+      color: rgba(255,255,255,.78);
+    }
+    .imgCard .meta b{color: rgba(255,255,255,.92)}
+    footer{
+      max-width:1100px; margin:26px auto 0; padding:0 18px;
+      color: var(--muted); font-size: 12.5px;
+    }
+    .sep{height:1px; background: rgba(255,255,255,.08); margin: 14px 0}
+  </style>
+</head>
+
+<body>
+  <div class="grid" aria-hidden="true"></div>
+
+  <header>
+    <div class="wrap">
+      <div class="topbar">
+        <div class="brand">
+          <div class="logo" aria-hidden="true"></div>
+          <div class="title">
+            <h1 data-testid="lab-title">Playwright User-Facing Locators Lab</h1>
+            <p>Öğrenciler için pratik sayfası • Her locator için ayrı senaryo ve doğrulama</p>
+          </div>
+        </div>
+
+        <div class="pill" title="test-run-hint">
+          <span class="dot" aria-hidden="true"></span>
+          <span>Hazır • <b id="clock">--:--:--</b></span>
+          <span class="mono">v1.0</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="card">
+        <div class="inner">
+          <h2>Practice Lab: Built-in User-Facing Locators</h2>
+          <p>
+            Bu sayfa Playwright’in önerdiği locator’ları (getByRole, getByText, getByLabel, getByPlaceholder, getByAltText,
+            getByTitle, getByTestId) uygulamalı öğretmek için tasarlandı.
+            Her bölümde UI üzerinde bir “state” değişimi veya doğrulanabilir çıktı var.
+          </p>
+          <div class="note">
+            <span class="mono">Öneri:</span> Bu dosyayı bir local server ile çalıştır:
+            <span class="kbd">npx http-server .</span> →
+            <span class="kbd">http://127.0.0.1:8080/playwright-locators-lab.html</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="inner quick">
+          <div class="q">
+            <h3>Hedef</h3>
+            <p>Öğrencilerin her locator’u gerçek örnek üzerinde görmesi ve test yazması.</p>
+          </div>
+          <div class="q">
+            <h3>Doğrulamalar</h3>
+            <p>Toast mesajları, sayaçlar, toggle state ve seçili seçenekler ile assert yapılabilir.</p>
+          </div>
+          <div class="q">
+            <h3>İpucu</h3>
+            <p><span class="kbd">await expect(locator).toBeVisible()</span> ile stabil test yazmayı vurgula.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="sections">
+
+      <!-- 1) getByRole -->
+      <article class="sec" data-testid="section-role">
+        <div class="secHead">
+          <div class="left">
+            <span class="badge">getByRole()</span>
+            <div>
+              <h3>Role tabanlı seçim — Button / Checkbox / Link</h3>
+              <p>Accessibility role + name ile en güvenilir seçim.</p>
+            </div>
+          </div>
+          <span class="badge" aria-label="section-id">S1</span>
+        </div>
+
+        <div class="secBody">
+          <div class="panel">
+            <h4>Uygulama Alanı</h4>
+
+            <div class="row">
+              <div>
+                <label for="roleSearch" id="roleSearchLabel">Search (Role Demo)</label>
+                <input id="roleSearch" type="search" placeholder="Type something to enable Search" aria-label="Search input" data-testid="role-search" />
+              </div>
+              <div>
+                <label>Options</label>
+                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                  <label style="display:flex; gap:10px; align-items:center; font-weight:600;">
+                    <input type="checkbox" id="roleCheckbox" aria-label="Enable advanced mode" data-testid="role-checkbox" />
+                    Advanced Mode
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="actions">
+              <button type="button" id="roleBtn" aria-label="Run search" disabled data-testid="role-button">Run Search</button>
+              <button type="button" class="secondary" id="roleReset" data-testid="role-reset">Reset</button>
+              <a href="#footer" role="link" aria-label="Go to footer" data-testid="role-link" style="align-self:center;color:var(--brand);text-decoration:none;font-weight:700;">Go to footer ↓</a>
+            </div>
+
+            <div class="toast" id="roleToast" data-testid="role-toast"></div>
+          </div>
+
+          <div class="panel">
+            <h4>Test Case Steps (S1)</h4>
+            <ol class="steps" data-testid="steps-role">
+              <li>Search input’a bir metin yaz (ör: <span class="mono">Playwright</span>).</li>
+              <li><span class="mono">Run Search</span> butonunun enabled olduğunu doğrula.</li>
+              <li><span class="mono">Enable advanced mode</span> checkbox’ını işaretle.</li>
+              <li><span class="mono">Run Search</span> butonuna tıkla ve toast mesajını doğrula.</li>
+              <li><span class="mono">Go to footer</span> link’ine tıklayıp sayfa sonuna kaydığını doğrula.</li>
+            </ol>
+            <div class="hint">
+              Önerilen locator örnekleri:<br>
+              <span class="mono">page.getByRole('button', { name: 'Run Search' })</span><br>
+              <span class="mono">page.getByRole('checkbox', { name: 'Enable advanced mode' })</span><br>
+              <span class="mono">page.getByRole('link', { name: 'Go to footer' })</span>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 2) getByText -->
+      <article class="sec" data-testid="section-text">
+        <div class="secHead">
+          <div class="left">
+            <span class="badge">getByText()</span>
+            <div>
+              <h3>Metin tabanlı seçim — Dinamik mesaj doğrulama</h3>
+              <p>UI’daki text değişimini assert etmek için ideal.</p>
+            </div>
+          </div>
+          <span class="badge" aria-label="section-id">S2</span>
+        </div>
+
+        <div class="secBody">
+          <div class="panel">
+            <h4>Uygulama Alanı</h4>
+            <p style="margin:0 0 10px;color:var(--muted);font-size:13px">
+              Aşağıdaki butona tıklayınca mesaj değişir. Metni yakalayıp doğrulayın.
+            </p>
+
+            <div class="actions">
+              <button type="button" id="textBtn" data-testid="text-button" aria-label="Generate message">Generate Message</button>
+              <button type="button" class="secondary" id="textBtn2" data-testid="text-button-2" aria-label="Generate warning">Generate Warning</button>
+            </div>
+
+            <div class="toast" id="textToast" data-testid="text-toast"></div>
+
+            <div style="margin-top:12px; padding:12px; border-radius:14px; border:1px solid rgba(255,255,255,.12); background:rgba(0,0,0,.18)">
+              <div data-testid="text-area">
+                <p id="textParagraph" style="margin:0; color:rgba(255,255,255,.88)">
+                  Status: <b>Idle</b>. Click a button to generate a message.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <h4>Test Case Steps (S2)</h4>
+            <ol class="steps" data-testid="steps-text">
+              <li><span class="mono">Generate Message</span> butonuna tıkla.</li>
+              <li>Sayfada <span class="mono">Status: Success</span> metninin göründüğünü doğrula.</li>
+              <li><span class="mono">Generate Warning</span> butonuna tıkla.</li>
+              <li>Sayfada <span class="mono">Status: Warning</span> metninin göründüğünü doğrula.</li>
+            </ol>
+            <div class="hint">
+              Önerilen locator örnekleri:<br>
+              <span class="mono">page.getByText('Status: Success')</span><br>
+              <span class="mono">page.getByText(/Status: Warning/i)</span>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 3) getByLabel -->
+      <article class="sec" data-testid="section-label">
+        <div class="secHead">
+          <div class="left">
+            <span class="badge">getByLabel()</span>
+            <div>
+              <h3>Label tabanlı seçim — Form input doğrulama</h3>
+              <p>Label → input eşleşmesi ile stabil form testleri.</p>
+            </div>
+          </div>
+          <span class="badge" aria-label="section-id">S3</span>
+        </div>
+
+        <div class="secBody">
+          <div class="panel">
+            <h4>Uygulama Alanı</h4>
+
+            <div class="row">
+              <div>
+                <label for="lblName">Full Name</label>
+                <input id="lblName" type="text" placeholder="e.g., Ayşe Yılmaz" aria-label="Full Name" data-testid="label-name" />
+              </div>
+              <div>
+                <label for="lblEmail">Email Address</label>
+                <input id="lblEmail" type="email" placeholder="e.g., ayse@example.com" aria-label="Email Address" data-testid="label-email" />
+              </div>
+            </div>
+
+            <div class="actions">
+              <button type="button" id="labelSubmit" aria-label="Save profile" data-testid="label-submit">Save Profile</button>
+              <button type="button" class="danger" id="labelClear" aria-label="Clear profile" data-testid="label-clear">Clear</button>
+            </div>
+
+            <div class="toast" id="labelToast" data-testid="label-toast"></div>
+          </div>
+
+          <div class="panel">
+            <h4>Test Case Steps (S3)</h4>
+            <ol class="steps" data-testid="steps-label">
+              <li><span class="mono">Full Name</span> alanına bir isim yaz.</li>
+              <li><span class="mono">Email Address</span> alanına e-posta yaz.</li>
+              <li><span class="mono">Save Profile</span> butonuna tıkla.</li>
+              <li>Toast mesajında girilen isim ve email’in geçtiğini doğrula.</li>
+              <li><span class="mono">Clear</span> butonuna tıkla ve input’ların boş olduğunu doğrula.</li>
+            </ol>
+            <div class="hint">
+              Önerilen locator örnekleri:<br>
+              <span class="mono">page.getByLabel('Full Name')</span><br>
+              <span class="mono">page.getByLabel('Email Address')</span>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 4) getByPlaceholder -->
+      <article class="sec" data-testid="section-placeholder">
+        <div class="secHead">
+          <div class="left">
+            <span class="badge">getByPlaceholder()</span>
+            <div>
+              <h3>Placeholder tabanlı seçim — Arama ve filtre</h3>
+              <p>Placeholder ile input yakalama, filtre sonucu doğrulama.</p>
+            </div>
+          </div>
+          <span class="badge" aria-label="section-id">S4</span>
+        </div>
+
+        <div class="secBody">
+          <div class="panel">
+            <h4>Uygulama Alanı</h4>
+
+            <label for="phSearch">Search Courses</label>
+            <input id="phSearch" type="text" placeholder="Search course by name (e.g., SQL)" data-testid="ph-input" />
+
+            <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
+              <span class="badge" data-testid="course-pill">Java</span>
+              <span class="badge" data-testid="course-pill">SQL</span>
+              <span class="badge" data-testid="course-pill">AWS</span>
+              <span class="badge" data-testid="course-pill">Playwright</span>
+              <span class="badge" data-testid="course-pill">Docker</span>
+            </div>
+
+            <div class="toast" id="phToast" data-testid="ph-toast"></div>
+          </div>
+
+          <div class="panel">
+            <h4>Test Case Steps (S4)</h4>
+            <ol class="steps" data-testid="steps-placeholder">
+              <li>Placeholder’ı <span class="mono">Search course by name...</span> olan input’u yakala.</li>
+              <li><span class="mono">SQL</span> yaz ve filtre toast mesajını doğrula.</li>
+            </ol>
+            <div class="hint">
+              Önerilen locator örneği:<br>
+              <span class="mono">page.getByPlaceholder('Search course by name (e.g., SQL)')</span>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 5) getByAltText -->
+      <article class="sec" data-testid="section-alt">
+        <div class="secHead">
+          <div class="left">
+            <span class="badge">getByAltText()</span>
+            <div>
+              <h3>Alt text tabanlı seçim — Görsel doğrulama</h3>
+              <p>Image görünürlüğü ve attribute doğrulaması.</p>
+            </div>
+          </div>
+          <span class="badge" aria-label="section-id">S5</span>
+        </div>
+
+        <div class="secBody">
+          <div class="panel">
+            <h4>Uygulama Alanı</h4>
+
+            <div class="imgWrap">
+              <div class="imgCard">
+                <img
+                  src="https://upload.wikimedia.org/wikipedia/commons/7/7f/Rotating_earth_animated_transparent.gif"
+                  alt="Rotating Earth"
+                  data-testid="img-earth"
+                />
+                <div class="meta">
+                  <b>Rotating Earth</b><br>
+                  alt: <span class="mono">Rotating Earth</span>
+                </div>
+              </div>
+
+              <div class="imgCard">
+                <img
+                  src="https://upload.wikimedia.org/wikipedia/commons/3/3a/Cat03.jpg"
+                  alt="Sleepy Cat"
+                  title="cat-photo"
+                  data-testid="img-cat"
+                />
+                <div class="meta">
+                  <b>Sleepy Cat</b><br>
+                  alt: <span class="mono">Sleepy Cat</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="actions">
+              <button type="button" id="altToggle" data-testid="alt-toggle" aria-label="Toggle cat visibility">Toggle Cat</button>
+            </div>
+
+            <div class="toast" id="altToast" data-testid="alt-toast"></div>
+          </div>
+
+          <div class="panel">
+            <h4>Test Case Steps (S5)</h4>
+            <ol class="steps" data-testid="steps-alt">
+              <li><span class="mono">Rotating Earth</span> alt text ile görseli yakala ve görünür olduğunu doğrula.</li>
+              <li><span class="mono">Toggle Cat</span> butonuna tıkla.</li>
+              <li><span class="mono">Sleepy Cat</span> görselinin gizlendiğini / tekrar görünür olduğunu doğrula.</li>
+            </ol>
+            <div class="hint">
+              Önerilen locator örnekleri:<br>
+              <span class="mono">page.getByAltText('Rotating Earth')</span><br>
+              <span class="mono">page.getByAltText('Sleepy Cat')</span>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 6) getByTitle -->
+      <article class="sec" data-testid="section-title">
+        <div class="secHead">
+          <div class="left">
+            <span class="badge">getByTitle()</span>
+            <div>
+              <h3>Title tabanlı seçim — Tooltip / ikon</h3>
+              <p>title attribute ile ikon/element yakalama.</p>
+            </div>
+          </div>
+          <span class="badge" aria-label="section-id">S6</span>
+        </div>
+
+        <div class="secBody">
+          <div class="panel">
+            <h4>Uygulama Alanı</h4>
+
+            <p style="margin:0 0 10px;color:var(--muted);font-size:13px">
+              Aşağıdaki ikonlar <span class="mono">title</span> attribute taşır.
+            </p>
+
+            <div style="display:flex; gap:12px; flex-wrap:wrap;">
+              <button type="button" class="secondary" title="help-icon" data-testid="title-help">❔ Help</button>
+              <button type="button" class="secondary" title="settings-icon" data-testid="title-settings">⚙️ Settings</button>
+              <button type="button" class="secondary" title="info-icon" data-testid="title-info">ℹ️ Info</button>
+            </div>
+
+            <div class="toast" id="titleToast" data-testid="title-toast"></div>
+          </div>
+
+          <div class="panel">
+            <h4>Test Case Steps (S6)</h4>
+            <ol class="steps" data-testid="steps-title">
+              <li><span class="mono">title="help-icon"</span> olan butonu yakala ve tıkla.</li>
+              <li>Toast mesajında <span class="mono">Help</span> geçtiğini doğrula.</li>
+              <li><span class="mono">title="settings-icon"</span> ve <span class="mono">title="info-icon"</span> için aynı doğrulamaları yap.</li>
+            </ol>
+            <div class="hint">
+              Önerilen locator örnekleri:<br>
+              <span class="mono">page.getByTitle('help-icon')</span><br>
+              <span class="mono">page.getByTitle('settings-icon')</span>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 7) getByTestId -->
+      <article class="sec" data-testid="section-testid">
+        <div class="secHead">
+          <div class="left">
+            <span class="badge">getByTestId()</span>
+            <div>
+              <h3>TestId tabanlı seçim — Sayaç ve state doğrulama</h3>
+              <p>UI metni değişse bile stabil selector için.</p>
+            </div>
+          </div>
+          <span class="badge" aria-label="section-id">S7</span>
+        </div>
+
+        <div class="secBody">
+          <div class="panel">
+            <h4>Uygulama Alanı</h4>
+
+            <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+              <span class="badge">Counter:</span>
+              <span class="badge mono" data-testid="counter-value" id="counterValue">0</span>
+              <span class="badge" data-testid="counter-state" id="counterState">Idle</span>
+            </div>
+
+            <div class="actions">
+              <button type="button" id="incBtn" data-testid="counter-inc" aria-label="Increase counter">+ Increase</button>
+              <button type="button" class="secondary" id="decBtn" data-testid="counter-dec" aria-label="Decrease counter">- Decrease</button>
+              <button type="button" class="danger" id="resetBtn" data-testid="counter-reset" aria-label="Reset counter">Reset</button>
+            </div>
+
+            <div class="toast" id="testidToast" data-testid="testid-toast"></div>
+          </div>
+
+          <div class="panel">
+            <h4>Test Case Steps (S7)</h4>
+            <ol class="steps" data-testid="steps-testid">
+              <li><span class="mono">counter-value</span> değerinin başlangıçta <span class="mono">0</span> olduğunu doğrula.</li>
+              <li><span class="mono">counter-inc</span> butonuna 2 kez tıkla.</li>
+              <li><span class="mono">counter-value</span> değerinin <span class="mono">2</span> olduğunu doğrula.</li>
+              <li><span class="mono">counter-dec</span> ile 1 azalt, değerin <span class="mono">1</span> olduğunu doğrula.</li>
+              <li><span class="mono">counter-reset</span> tıkla, tekrar <span class="mono">0</span> olduğunu doğrula.</li>
+            </ol>
+            <div class="hint">
+              Önerilen locator örnekleri:<br>
+              <span class="mono">page.getByTestId('counter-inc')</span><br>
+              <span class="mono">page.getByTestId('counter-value')</span>
+            </div>
+          </div>
+        </div>
+      </article>
+
+    </section>
+
+    <footer id="footer" data-testid="footer">
+      <div class="sep"></div>
+      <p>
+        Bu sayfa eğitim amaçlıdır. Öğrencilerle birlikte her bölüm için ayrı test dosyası yazabilir,
+        sonra hepsini tek suite altında koşturabilirsiniz.
+      </p>
+      <p class="mono" style="margin-top:8px; opacity:.9">
+        İpucu: Testleri önce stabil hale getirin → sonra refactor yaparak locator’ları “en doğru” şekilde seçin.
+      </p>
+    </footer>
+  </main>
+
+ <script>
+  window.addEventListener('DOMContentLoaded', () => {
+
+    // clock
+    function pad(n){ return String(n).padStart(2,'0'); }
+    function tick(){
+      const el = document.getElementById('clock');
+      if(!el) return;
+      const d = new Date();
+      el.textContent = `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+    }
+    tick(); setInterval(tick, 1000);
+
+    // helpers
+    function showToast(el, type, msg){
+      if(!el) return;
+      el.className = `toast ${type || ''}`;
+      el.textContent = msg;
+      el.style.display = 'block';
+    }
+    function hideToast(el){
+      if(!el) return;
+      el.style.display='none';
+      el.textContent='';
+      el.className='toast';
+    }
+
+    // ===================== S1 Role demo (guarded) =====================
+    const roleSearch = document.getElementById('roleSearch');
+    const roleBtn = document.getElementById('roleBtn');
+    const roleCheckbox = document.getElementById('roleCheckbox');
+    const roleToast = document.getElementById('roleToast');
+    const roleReset = document.getElementById('roleReset');
+
+    if (roleSearch && roleBtn && roleToast) {
+      roleSearch.addEventListener('input', () => {
+        roleBtn.disabled = roleSearch.value.trim().length === 0;
+        hideToast(roleToast);
+      });
+    }
+
+    if (roleBtn && roleSearch && roleCheckbox && roleToast) {
+      roleBtn.addEventListener('click', () => {
+        const q = roleSearch.value.trim();
+        const adv = roleCheckbox.checked ? 'ON' : 'OFF';
+        showToast(roleToast, 'ok', `Search executed: "${q}" • Advanced Mode: ${adv}`);
+      });
+    }
+
+    if (roleReset && roleSearch && roleCheckbox && roleBtn && roleToast) {
+      roleReset.addEventListener('click', () => {
+        roleSearch.value = '';
+        roleCheckbox.checked = false;
+        roleBtn.disabled = true;
+        showToast(roleToast, 'warn', 'Reset complete. You can start again.');
+      });
+    }
+
+    // ===================== S2 Text demo (guarded) =====================
+    const textBtn = document.getElementById('textBtn');
+    const textBtn2 = document.getElementById('textBtn2');
+    const textToast = document.getElementById('textToast');
+    const textParagraph = document.getElementById('textParagraph');
+
+    if (textBtn && textParagraph && textToast) {
+      textBtn.addEventListener('click', () => {
+        textParagraph.innerHTML =
+          `Status: <b>Success</b>. Message generated at <span class="mono">${new Date().toLocaleTimeString()}</span>.`;
+        showToast(textToast, 'ok', 'Generated: Status: Success');
+      });
+    }
+
+    if (textBtn2 && textParagraph && textToast) {
+      textBtn2.addEventListener('click', () => {
+        textParagraph.innerHTML = `Status: <b>Warning</b>. Please double-check your inputs.`;
+        showToast(textToast, 'warn', 'Generated: Status: Warning');
+      });
+    }
+
+    // ===================== S3 Label demo (guarded) =====================
+    const lblName = document.getElementById('lblName');
+    const lblEmail = document.getElementById('lblEmail');
+    const labelToast = document.getElementById('labelToast');
+    const labelSubmit = document.getElementById('labelSubmit');
+    const labelClear = document.getElementById('labelClear');
+
+    if (labelSubmit && lblName && lblEmail && labelToast) {
+      labelSubmit.addEventListener('click', () => {
+        const n = lblName.value.trim();
+        const e = lblEmail.value.trim();
+        if(!n || !e){
+          showToast(labelToast, 'bad', 'Error: Name and Email are required.');
+          return;
+        }
+        showToast(labelToast, 'ok', `Saved ✔ Name="${n}" • Email="${e}"`);
+      });
+    }
+
+    if (labelClear && lblName && lblEmail && labelToast) {
+      labelClear.addEventListener('click', () => {
+        lblName.value = '';
+        lblEmail.value = '';
+        showToast(labelToast, 'warn', 'Cleared. Inputs are empty now.');
+      });
+    }
+
+    // ===================== S4 Placeholder demo (guarded) =====================
+    const phInput = document.getElementById('phSearch');
+    const phToast = document.getElementById('phToast');
+    const pills = Array.from(document.querySelectorAll('[data-testid="course-pill"]'));
+
+    function highlightPills(q){
+      const query = (q || '').trim().toLowerCase();
+      let matched = 0;
+
+      pills.forEach(p => {
+        const isMatch = query && p.textContent.toLowerCase() === query;
+        p.style.borderColor = isMatch ? 'rgba(77,255,138,.55)' : 'rgba(120,255,214,.28)';
+        p.style.background = isMatch ? 'rgba(77,255,138,.12)' : 'rgba(120,255,214,.06)';
+        if(isMatch) matched++;
+      });
+
+      if(!query){
+        hideToast(phToast);
+        return;
+      }
+      showToast(phToast, matched ? 'ok' : 'bad',
+        matched ? `Filter applied: "${q}" matched.` : `No match for "${q}".`);
+    }
+
+    if (phInput) {
+      phInput.addEventListener('input', () => highlightPills(phInput.value));
+    }
+
+    // ===================== S5 Alt text demo (guarded) =====================
+    const catImg = document.querySelector('[data-testid="img-cat"]');
+    const altToggle = document.getElementById('altToggle');
+    const altToast = document.getElementById('altToast');
+
+    if (altToggle && catImg && altToast) {
+      altToggle.addEventListener('click', () => {
+        const isHidden = catImg.style.display === 'none';
+        catImg.style.display = isHidden ? 'block' : 'none';
+        showToast(altToast, 'ok', isHidden ? 'Cat is visible now.' : 'Cat is hidden now.');
+      });
+    }
+
+    // ===================== S6 Title demo (fixed) =====================
+const titleToast = document.getElementById('titleToast');
+
+const help = document.querySelector('[data-testid="title-help"]');
+const settings = document.querySelector('[data-testid="title-settings"]');
+const info = document.querySelector('[data-testid="title-info"]');
+
+if (help && titleToast) help.addEventListener('click', () => showToast(titleToast, 'ok', 'Clicked: Help'));
+if (settings && titleToast) settings.addEventListener('click', () => showToast(titleToast, 'ok', 'Clicked: Settings'));
+if (info && titleToast) info.addEventListener('click', () => showToast(titleToast, 'ok', 'Clicked: Info'));
+
+
+    // ===================== S7 TestId demo (counter) =====================
+    const counterValue = document.getElementById('counterValue');
+    const counterState = document.getElementById('counterState');
+    const testidToast = document.getElementById('testidToast');
+    const incBtn = document.getElementById('incBtn');
+    const decBtn = document.getElementById('decBtn');
+    const resetBtn = document.getElementById('resetBtn');
+
+    function setCounterState(s){
+      if(!counterState) return;
+      counterState.textContent = s;
+      counterState.style.borderColor = s === 'Idle' ? 'rgba(120,255,214,.28)' : 'rgba(77,255,138,.40)';
+      counterState.style.background = s === 'Idle' ? 'rgba(120,255,214,.06)' : 'rgba(77,255,138,.10)';
+    }
+
+    function getCount(){
+      return parseInt((counterValue?.textContent || '0').trim(), 10) || 0;
+    }
+    function setCount(n){
+      if(counterValue) counterValue.textContent = String(n);
+    }
+
+    if (incBtn && counterValue) {
+      incBtn.addEventListener('click', () => {
+        const next = getCount() + 1;
+        setCount(next);
+        setCounterState('Updated');
+        showToast(testidToast, 'ok', `Counter increased → ${next}`);
+      });
+    }
+
+    if (decBtn && counterValue) {
+      decBtn.addEventListener('click', () => {
+        const next = Math.max(0, getCount() - 1);
+        setCount(next);
+        setCounterState('Updated');
+        showToast(testidToast, 'warn', `Counter decreased → ${next}`);
+      });
+    }
+
+    if (resetBtn && counterValue) {
+      resetBtn.addEventListener('click', () => {
+        setCount(0);
+        setCounterState('Idle');
+        showToast(testidToast, 'warn', 'Counter reset → 0');
+      });
+    }
+
+    // debug: counter elemanlarını gerçekten görüyor muyuz?
+    console.log("[Counter debug]", { incBtn: !!incBtn, counterValue: !!counterValue, testidToast: !!testidToast });
+
+  });
+</script>
+
+</body>
+</html>

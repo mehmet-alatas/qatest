@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Alerts - Selenium Training</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .section {
+            margin-bottom: 40px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .section.full-width {
+            display: block;
+        }
+        .section h2 {
+            color: #555;
+            margin-bottom: 15px;
+            grid-column: 1 / -1;
+        }
+        .practice-area {
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+        }
+        .code-area {
+            padding: 15px;
+            background-color: #1e1e1e;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        .code-area h3 {
+            color: #4CAF50;
+            margin-top: 0;
+            font-size: 16px;
+        }
+        .code-area pre {
+            margin: 0;
+            font-size: 12px;
+            color: #f8f8f2;
+            line-height: 1.4;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .keyword { color: #66d9ef; }
+        .string { color: #a6e22e; }
+        .comment { color: #75715e; }
+        .annotation { color: #f92672; }
+        .method { color: #a6e22e; }
+        .button {
+            padding: 12px 24px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 15px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+        .button.success {
+            background-color: #28a745;
+        }
+        .button.success:hover {
+            background-color: #218838;
+        }
+        .button.warning {
+            background-color: #ffc107;
+            color: #333;
+        }
+        .button.warning:hover {
+            background-color: #e0a800;
+        }
+        .button.danger {
+            background-color: #dc3545;
+        }
+        .button.danger:hover {
+            background-color: #c82333;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .alert-info {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            border-left: 4px solid #007bff;
+            margin: 15px 0;
+        }
+        .alert-info strong {
+            color: #007bff;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+        input[type="text"], input[type="email"], textarea, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        .alert-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .alert-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .alert-card h3 {
+            color: #333;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 8px;
+        }
+        .alert-log {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            margin: 10px 0;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 300px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        .modal-buttons {
+            margin-top: 20px;
+        }
+        .modal-button {
+            padding: 8px 16px;
+            margin: 0 5px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .modal-button.primary {
+            background-color: #007bff;
+            color: white;
+        }
+        .modal-button.secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-success {
+            background-color: #28a745;
+        }
+        .status-error {
+            background-color: #dc3545;
+        }
+        .status-warning {
+            background-color: #ffc107;
+        }
+        .custom-alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 4px;
+            color: white;
+            font-weight: bold;
+            z-index: 1001;
+            display: none;
+            animation: slideIn 0.3s ease-out;
+        }
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        .custom-alert.success {
+            background-color: #28a745;
+        }
+        .custom-alert.error {
+            background-color: #dc3545;
+        }
+        .custom-alert.warning {
+            background-color: #ffc107;
+            color: #333;
+        }
+        .custom-alert.info {
+            background-color: #17a2b8;
+        }
+        @media (max-width: 768px) {
+            .section {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>JavaScript Alerts Practice with Selenium Test Examples</h1>
+        
+        <div class="section full-width">
+            <h2>Understanding JavaScript Alerts</h2>
+            <div class="alert-info">
+                <strong>Alert:</strong> Simple message box with OK button. Used for notifications.
+            </div>
+            <div class="alert-info">
+                <strong>Confirm:</strong> Message box with OK and Cancel buttons. Used for confirmations.
+            </div>
+            <div class="alert-info">
+                <strong>Prompt:</strong> Message box with input field and OK/Cancel buttons. Used for user input.
+            </div>
+        </div>
+        <div class="section">
+            <h2>Basic JavaScript Alerts</h2>
+            <div class="practice-area">
+                <p>Click the buttons below to trigger different types of JavaScript alerts.</p>
+                
+                <div style="margin: 20px 0;">
+                    <button class="button" onclick="showSimpleAlert()">Simple Alert</button>
+                    <button class="button warning" onclick="showWarningAlert()">Warning Alert</button>
+                    <button class="button success" onclick="showSuccessAlert()">Success Alert</button>
+                    <button class="button danger" onclick="showErrorAlert()">Error Alert</button>
+                </div>
+                
+                <div id="alert-result" class="result"></div>
+                
+                <div style="margin-top: 20px; padding: 15px; background-color: #fff; border-radius: 4px; border-left: 4px solid #007bff;">
+                    <h4 style="color: #007bff; margin-bottom: 10px;">Test Case: Basic JavaScript Alerts</h4>
+                    <p><strong>Test ID:</strong> TC_ALERT_001</p>
+                    <p><strong>Objective:</strong> Verify different types of JavaScript alerts can be handled correctly</p>
+                    <p><strong>Test Steps:</strong></p>
+                    <ol style="margin: 10px 0 10px 20px; font-size: 14px;">
+                        <li>Click "Simple Alert" button and verify alert text: "This is a simple alert message!"</li>
+                        <li>Accept the simple alert and verify it's dismissed</li>
+                        <li>Click "Warning Alert" button and verify alert text: "Warning: This action cannot be undone!"</li>
+                        <li>Accept the warning alert and verify it's dismissed</li>
+                        <li>Click "Success Alert" button and verify alert text: "Success: Operation completed successfully!"</li>
+                        <li>Accept the success alert and verify it's dismissed</li>
+                        <li>Click "Error Alert" button and verify alert text: "Error: Something went wrong!"</li>
+                        <li>Accept the error alert and verify result log contains all entries</li>
+                    </ol>
+                    <p><strong>Expected Results:</strong> All alert types should display correct messages, be acceptible, and log entries should be created</p>
+                    <p><strong>Test Data:</strong> N/A (alerts use predefined messages)</p>
+                </div>
+            </div>
+            <div class="code-area">
+                <h3>Selenium Test Code - Basic Alerts</h3>
+                <pre><code><span class="annotation">@Test</span>
+<span class="keyword">public void</span> <span class="method">basicAlertsTest</span>() <span class="keyword">throws</span> InterruptedException {
+    <span class="comment">// Finding alert buttons</span>
+    WebElement simpleAlertButton = driver.<span class="method">findElement</span>(By.<span class="method">xpath</span>(<span class="string">"//button[@onclick='showSimpleAlert()']"</span>));
+    WebElement warningAlertButton = driver.<span class="method">findElement</span>(By.<span class="method">xpath</span>(<span class="string">"//button[@onclick='showWarningAlert()']"</span>));
+    WebElement successAlertButton = driver.<span class="method">findElement</span>(By.<span class="method">xpath</span>(<span class="string">"//button[@onclick='showSuccessAlert()']"</span>));
+    WebElement errorAlertButton = driver.<span class="method">findElement</span>(By.<span class="method">xpath</span>(<span class="string">"//button[@onclick='showErrorAlert()']"</span>));
+    WebElement alertResult = driver.<span class="method">findElement</span>(By.<span class="method">id</span>(<span class="string">"alert-result"</span>));
+    <span class="comment">// Test Simple Alert</span>
+    simpleAlertButton.<span class="method">click</span>();
+    
+    <span class="comment">// Wait for alert to be present</span>
+    WebDriverWait wait = <span class="keyword">new</span> WebDriverWait(driver, Duration.<span class="method">ofSeconds</span>(<span class="string">10</span>));
+    Alert simpleAlert = wait.<span class="method">until</span>(ExpectedConditions.<span class="method">alertIsPresent</span>());
+    
+    <span class="comment">// Verify alert text and accept</span>
+    String simpleAlertText = simpleAlert.<span class="method">getText</span>();
+    Assertions.<span class="method">assertEquals</span>(<span class="string">"This is a simple alert message!"</span>, simpleAlertText);
+    simpleAlert.<span class="method">accept</span>();
+    <span class="comment">// Test Warning Alert</span>
+    warningAlertButton.<span class="method">click</span>();
+    Alert warningAlert = wait.<span class="method">until</span>(ExpectedConditions.<span class="method">alertIsPresent</span>());
+    String warningAlertText = warningAlert.<span class="method">getText</span>();
+    Assertions.<span class="method">assertEquals</span>(<span class="string">"Warning: This action cannot be undone!"</span>, warningAlertText);
+    warningAlert.<span class="method">accept</span>();
+    <span class="comment">// Test Success Alert</span>
+    successAlertButton.<span class="method">click</span>();
+    Alert successAlert = wait.<span class="method">until</span>(ExpectedConditions.<span class="method">alertIsPresent</span>());
+    String successAlertText = successAlert.<span class="method">getText</span>();
+    Assertions.<span class="method">assertEquals</span>(<span class="string">"Success: Operation completed successfully!"</span>, successAlertText);
+    successAlert.<span class="method">accept</span>();
+    <span class="comment">// Test Error Alert</span>
+    errorAlertButton.<span class="method">click</span>();
+    Alert errorAlert = wait.<span class="method">until</span>(ExpectedConditions.<span class="method">alertIsPresent</span>());
+    String errorAlertText = errorAlert.<span class="method">getText</span>();
+    Assertions.<span class="method">assertEquals</span>(<span class="string">"Error: Something went wrong!"</span>, errorAlertText);
+    errorAlert.<span class="method">accept</span>();
+    <span class="comment">// Verify result log contains entries</span>
+    Thread.<span class="method">sleep</span>(<span class="string">1000</span>);
+    String resultText = alertResult.<span class="method">getText</span>();
+    Assertions.<span class="method">assertTrue</span>(resultText.<span class="method">contains</span>(<span class="string">"Simple alert displayed and accepted"</span>));
+    Assertions.<span class="method">assertTrue</span>(resultText.<span class="method">contains</span>(<span class="string">"Warning alert displayed and accepted"</span>));
+}</code></pre>
+            </div>
+        </div>
+        <div class="section">
+            <h2>Confirm Dialogs</h2>
+            <div class="practice-area">
+                <p>These dialogs require user confirmation before proceeding with an action.</p>
+                
+                <div style="margin: 20px 0;">
+                    <button class="button" onclick="showDeleteConfirm()">Delete Item</button>
+                    <button class="button warning" onclick="showNavigationConfirm()">Leave Page</button>
+                    <button class="button success" onclick="showSaveConfirm()">Save Changes</button>
+                    <button class="button danger" onclick="showResetConfirm()">Reset Form</button>
+                </div>
+                
+                <div id="confirm-result" class="result"></div>
+                
+                <div style="margin-top: 20px; padding: 15px; background-color: #fff; border-radius: 4px; border-left: 4px solid #28a745;">
+                    <h4 style="color: #28a745; margin-bottom: 10px;">Test Case: Confirm Dialogs</h4>
+                    <p><strong>Test ID:</strong> TC_CONFIRM_001</p>
+                    <p><strong>Objective:</strong> Verify confirm dialogs can be accepted or dismissed and proper actions are taken</p>
+                    <p><strong>Test Steps:</strong></p>
+                    <ol style="margin: 10px 0 10px 20px; font-size: 14px;">
+                        <li>Click "Delete Item" button and verify confirm dialog text</li>
+                        <li>Accept the delete confirmation and verify "Delete confirmed" message appears</li>
+                        <li>Click "Leave Page" button and verify confirm dialog about unsaved changes</li>
+                        <li>Dismiss the navigation confirmation and verify "Navigation cancelled" message</li>
+                        <li>Click "Save Changes" button and accept the confirmation</li>
+                        <li>Verify "Save confirmed" message appears in result log</li>
+                        <li>Click "Reset Form" button and dismiss the confirmation</li>
+                        <li>Verify "Reset cancelled" message appears in result log</li>
+                    </ol>
+                    <p><strong>Expected Results:</strong> Accept should trigger positive action, dismiss should cancel action, appropriate messages logged</p>
+                    <p><strong>Test Data:</strong> N/A (confirmations use predefined messages)</p>
+                </div>
+            </div>
+            <div class="code-area">
+                <h3>Selenium Test Code - Confirm Dialogs</h3>
+                <pre><code><span class="annotation">@Test</span>
+<span class="keyword">public void</span> <span class="method">confirmDialogsTest</span>() <span class="keyword">throws</span> InterruptedException {
+    <span class="comment">// Finding confirm dialog buttons</span>
+    WebElement deleteButton = driver.<span class="method">findElement</span>(By.<span class="method">xpath</span>(<span class="string">"//button[@onclick='showDeleteConfirm()']"</span>));
+    WebElement navigationButton = driver.<span class="method">findElement</span>(By.<span class="method">xpath</span>(<span class="string">"//button[@onclick='showNavigationConfirm()']"</span>));
+    WebElement saveButton = driver.<span class="method">findElement</span>(By.<span class="method">xpath</span>(<span class="string">"//button[@onclick='showSaveConfirm()']"</span>));
+    WebElement resetButton = driver.<span class="method">findElement</span>(By.<span class="method">xpath</span>(<span class="string">"//button[@onclick='showResetConfirm()']"</span>));
+    WebElement confirmResult = driver.<span class="method">findElement</span>(By.<span class="method">id</span>(<span class="string">"confirm-result"</span>));
+    WebDriverWait wait = <span class="keyword">new</span> WebDriverWait(driver, Duration.<span class="method">ofSeconds</span>(<span class="string">10</span>));
+    <span class="comment">// Test Delete Confirm - Accept</span>
+    deleteButton.<span class="method">click</span>();
+    Alert deleteAlert = wait.<span class="method">until</span>(ExpectedConditions.<span class="method">alertIsPresent</span>());
+    String deleteAlertText = deleteAlert.<span class="method">getText</span>();
+    Assertions.<span class="method">assertEquals</span>(<span class="string">"Are you sure you want to delete this item?"</span>, deleteAlertText);
+    deleteAlert.<span class="method">accept</span>();
+    Thread.<span class="method">sleep</span>(<span class="string">1000</span>);
+    String resultAfterAccept = confirmResult.<span class="method">getText</span>();
+    Assertions.<span class="method">assertTrue</span>(resultAfterAccept.<span class="method">contains</span>(<span class="string">"Delete confirmed"</span>));
+    <span class="comment">// Test Navigation Confirm - Dismiss</span>
+    navigationButton.<span class="method">click</span>();
+    Alert navigationAlert = wait.<span class="method">until</span>(ExpectedConditions.<span class="method">alertIsPresent</span>());
+    String navigationAlertText = navigationAlert.<span class="method">getText</span>();
+    Assertions.<span class="method">assertTrue</span>(navigationAlertText.<span class="method">contains</span>(<span class="string">"unsaved changes"</span>));
+    navigationAlert.<span class="method">dismiss</span>();
+    Thread.<span class="method">sleep</span>(<span class="string">1000</span>);
+    String resultAfterDismiss = confirmResult.<span class="method">getText</span>();
+    Assertions.<span class="method">assertTrue</span>(resultAfterDismiss.<span class="method">contains</span>(<span class="string">"Navigation cancelled"</span>));
+    <span class="comment">// Test Save Confirm - Accept</span>
+    saveButton.<span class="method">click</span>();
+    Alert saveAlert = wait.<span class="method">until</span>(ExpectedConditions.<span class="method">alertIsPresent</span>());
+    saveAlert.<span class="method">accept</span>();
+    Thread.<span class="method">sleep</span>(<span class="string">1000</span>);
+    String saveResult = confirmResult.<span class="method">getText</span>();
+    Assertions.<span class="method">assertTrue</span>(saveResult.<span class="method">contains</span>(<span class="string">"Save confirmed"</span>));
+    <span class="comment">// Test Reset Confirm - Dismiss</span>
+    resetButton.<span class="method">click</span>();
+    Alert resetAlert = wait.<span class="method">until</span>(ExpectedConditions.<span class="method">alertIsPresent</span>());
+    resetAlert.<span class="method">dismiss</span>();
+    Thread.<span class="method">sleep</span>(<span class="string">1000</span>);
+    String resetResult = confirmResult.<span class="method">getText</span>();
+    Assertions.<span class="method">assertTrue</span>(resetResult.<span class="method">contains</span>(<span class="string">"Reset cancelled"</span>));
+}</code></pre>
+            </div>
+        </div>
+        <div class="section">
+            <h2>Prompt Dialogs</h2>
+            <div class="practice-area">
+                <p>These dialogs collect user input through a text field.</p>
+                
+                <div style="margin: 20px 0;">
+                    <button class="button" onclick="showNamePrompt()">Enter Name</button>
+                    <button class="button" onclick="showAgePrompt()">Enter Age</button>
+                    <button class="button warning" onclick="showEmailPrompt()">Enter Email</button>
+                    <button class="button success" onclick="showPasswordPrompt()">Enter Password</button>
+                </div>
+                
+                <div id="prompt-result" class="result"></div>
+                
+                <div style="margin-top: 20px; padding: 15px; background-color: #fff; border-radius: 4px; border-left: 4px solid #ffc107;">
+                    <h4 style="color: #e67e22; margin-bottom: 10px;">Test Case: Prompt Dialogs</h4>
+                    <p><strong>Test ID:</strong> TC_PROMPT_001</p>
+                    <p><strong>Objective:</strong> Verify prompt dialogs can accept user input, be cancelled, and handle different data types</p>
+                    <p><strong>Test Steps:</strong></p>
+                    <ol style="margin: 10px 0 10px 20px; font-size: 14px;">
+                        <li>Click "Enter Name" button and verify prompt text: "Please enter your name:"</li>
+                        <li>Enter "John Doe" in prompt and accept, verify "Name entered: John Doe" appears</li>
+                        <li>Click "Enter Age" button and verify prompt text: "Please enter your age:"</li>
+                        <li>Enter "25" in prompt and accept, verify "Age entered: 25" appears</li>
+                        <li>Click "Enter Email" button and dismiss without entering text</li>
+                        <li>Verify "Email prompt cancelled" appears in result log</li>
+                        <li>Click "Enter Password" button and enter "mypassword123"</li>
+                        <li>Accept and verify "Password entered (hidden for security)" appears</li>
+                    </ol>
+                    <p><strong>Expected Results:</strong> Entered text should be captured, cancelled prompts should be logged, passwords hidden</p>
+                    <p><strong>Test Data:</strong> Name: "John Doe", Age: "25", Password: "mypassword123"</p>
+                </div>
+            </div>
+            <div class="code-area">
+                <h3>Selenium Test Code - Prompt Dialogs</h3>
+                <pre><code><span class="annotation">@Test</span>
+<span class="keyword">public void</span> <span class="method">promptDialogsTest</span>() <span class="keyword">throws</span> InterruptedException {
+    <span class="comment">// Finding prompt dialog buttons</span>
+    WebElement nameButton = driver.<span class="method">findElement</span>(By.<span class="method">xpath</span>(<span class="string">"//button[@onclick='showNamePrompt()']"</span>));
+    WebElement ageButton = driver.<span class="method">findElement</span>(By.<span class="method">xpath</span>(<span class="string">"//button[@onclick='showAgePrompt()']"</span>));
+    WebElement emailButton = driver.<span class="method">findElement</span>(By.<span class="method">xpath</span>(<span class="string">"//button[@onclick='showEmailPrompt()']"</span>));
+    WebElement passwordButton = driver.<span class="method">findElement</span>(By.<span class="method">xpath</span>(<span class="string">"//button[@onclick='showPasswordPrompt()']"</span>));
+    WebElement promptResult = driver.<span class="method">findElement</span>(By.<span class="method">id</span>(<span class="string">"prompt-result"</span>));
+    WebDriverWait wait = <span class="keyword">new</span> WebDriverWait(driver, Duration.<span class="method">ofSeconds</span>(<span class="string">10</span>));
+    <span class="comment">// Test Name Prompt - Enter text and accept</span>
+    nameButton.<span class="method">click</span>();
+    Alert namePrompt = wait.<span class="method">until</span>(ExpectedConditions.<span class="method">alertIsPresent</span>());
+    String namePromptText = namePrompt.<span class="method">getText</span>();
+    Assertions.<span class="method">assertEquals</span>(<span class="string">"Please enter your name:"</span>, namePromptText);
+    
+    namePrompt.<span class="method">sendKeys</span>(<span class="string">"John Doe"</span>);
+    namePrompt.<span class="method">accept</span>();
+    Thread.<span class="method">sleep</span>(<span class="string">1000</span>);
+    String nameResult = promptResult.<span class="method">getText</span>();
+    Assertions.<span class="method">assertTrue</span>(nameResult.<span class="method">contains</span>(<span class="string">"Name entered: John Doe"</span>));
+    <span class="comment">// Test Age Prompt - Enter number and accept</span>
+    ageButton.<span class="method">click</span>();
+    Alert agePrompt = wait.<span class="method">until</span>(ExpectedConditions.<span class="method">alertIsPresent</span>());
+    String agePromptText = agePrompt.<span class="method">getText</span>();
+    Assertions.<span class="method">assertEquals</span>(<span class="string">"Please enter your age:"</span>, agePromptText);
+    
+    agePrompt.<span class="method">sendKeys</span>(<span class="string">"25"</span>);
+    agePrompt.<span class="method">accept</span>();
+    Thread.<span class="method">sleep</span>(<span class="string">1000</span>);
+    String ageResult = promptResult.<span class="method">getText</span>();
+    Assertions.<span class="method">assertTrue</span>(ageResult.<span class="method">contains</span>(<span class="string">"Age entered: 25"</span>));
+    <span class="comment">// Test Email Prompt - Cancel without entering text</span>
+    emailButton.<span class="method">click</span>();
+    Alert emailPrompt = wait.<span class="method">until</span>(ExpectedConditions.<span class="method">alertIsPresent</span>());
+    emailPrompt.<span class="method">dismiss</span>();
+    Thread.<span class="method">sleep</span>(<span class="string">1000</span>);
+    String emailResult = promptResult.<span class="method">getText</span>();
+    Assertions.<span class="method">assertTrue</span>(emailResult.<span class="method">contains</span>(<span class="string">"Email prompt cancelled"</span>));
+    <span class="comment">// Test Password Prompt - Enter text and accept</span>
+    passwordButton.<span class="method">click</span>();
+    Alert passwordPrompt = wait.<span class="method">until</span>(ExpectedConditions.<span class="method">alertIsPresent</span>());
+    passwordPrompt.<span class="method">sendKeys</span>(<span class="string">"mypassword123"</span>);
+    passwordPrompt.<span class="method">accept</span>();
+    Thread.<span class="method">sleep</span>(<span class="string">1000</span>);
+    String passwordResult = promptResult.<span class="method">getText</span>();
+    Assertions.<span class="method">assertTrue</span>(passwordResult.<span class="method">contains</span>(<span class="string">"Password entered"</span>));
+}</code></pre>
+            </div>
+        </div>
+        <div class="section">
+            <h2>Form with Alert Integration</h2>
+            <div class="practice-area">
+                <p>This form demonstrates alerts in real-world scenarios.</p>
+                
+                <form id="alert-form" onsubmit="handleFormSubmit(event)">
+                    <div class="form-group">
+                        <label for="username">Username:</label>
+                        <input type="text" id="username" name="username" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="department">Department:</label>
+                        <select id="department" name="department" required>
+                            <option value="">Select Department</option>
+                            <option value="IT">IT</option>
+                            <option value="HR">HR</option>
+                            <option value="Finance">Finance</option>
+                            <option value="Marketing">Marketing</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="comments">Comments:</label>
+                        <textarea id="comments" name="comments" rows="4" placeholder="Enter your comments..."></textarea>
+                    </div>
+                    
+                    <div style="margin: 20px 0;">
+                        <button type="submit" class="button success">Submit Form</button>
+                        <button type="button" class="button warning" onclick="clearForm()">Clear Form</button>
+                        <button type="button" class="button danger" onclick="confirmFormReset()">Reset Form</button>
+                    </div>
+                </form>
+                
+                <div id="form-result" class="result"></div>
+                
+                <div style="margin-top: 20px; padding: 15px; background-color: #fff; border-radius: 4px; border-left: 4px solid #17a2b8;">
+                    <h4 style="color: #17a2b8; margin-bottom: 10px;">Test Case: Form with Alert Integration</h4>
+                    <p><strong>Test ID:</strong> TC_FORM_ALERT_001</p>
+                    <p><strong>Objective:</strong> Verify form submission with alert confirmations and form clearing operations</p>
+                    <p><strong>Test Steps:</strong></p>
+                    <ol style="margin: 10px 0 10px 20px; font-size: 14px;">
+                        <li>Fill username field with "testuser"</li>
+                        <li>Fill email field with "test@example.com"</li>
+                        <li>Select "IT" from department dropdown</li>
+                        <li>Fill comments field with "This is a test comment"</li>
+                        <li>Click "Submit Form" button and verify confirmation dialog contains all form data</li>
+                        <li>Accept the confirmation and verify success alert appears</li>
+                        <li>Verify form is cleared after successful submission</li>
+                        <li>Fill form again and click "Clear Form" button</li>
+                        <li>Accept clear confirmation and verify form fields are empty</li>
+                        <li>Fill form and click "Reset Form", then dismiss confirmation</li>
+                        <li>Verify form data is preserved when reset is cancelled</li>
+                    </ol>
+                    <p><strong>Expected Results:</strong> Form submission should show confirmation with data, clearing should work, reset cancellation should preserve data</p>
+                    <p><strong>Test Data:</strong> Username: "testuser", Email: "test@example.com", Department: "IT", Comments: "This is a test comment"</p>
+                </div>
+            </div>
+            <div class="code-area">
+                <h3>Selenium Test Code - Form with Alerts</h3>
+                <pre><code><span class="annotation">@Test</span>
+<span class="keyword">public void</span> <span class="method">formWithAlertsTest</span>() <span class="keyword">throws</span> InterruptedException {
+    <span class="comment">// Finding form elements</span>
+    WebElement usernameField = driver.<span class="method">findElement</span>(By.<span class="method">id</span>(<span class="string">"username"</span>));
+    WebElement emailField = driver.<span class="method">findElement</span>(By.<span class="method">id</span>(<span class="string">"email"</span>));
+    WebElement departmentSelect = driver.<span class="method">findElement</span>(By.<span class="method">id</span>(<span class="string">"department"</span>));
+    WebElement commentsField = driver.<span class="method">findElement</span>(By.<span class="method">id</span>(<span class="string">"comments"</span>));
+    WebElement submitButton = driver.<span class="method">findElement</span>(By.<span class="method">xpath</span>(<span class="string">"//button[@type='submit']"</span>));
+    WebElement clearButton = driver.<span class="method">findElement</span>(By.<span class="method">xpath</span>(<span class="string">"//button[@onclick='clearForm()']"</span>));
+    WebElement resetButton = driver.<span class="method">findElement</span>(By.<span class="method">xpath</span>(<span class="string">"//button[@onclick='confirmFormReset()']"</span>));
+    WebElement formResult = driver.<span class="method">findElement</span>(By.<span class="method">id</span>(<span class="string">"form-result"</span>));
+    WebDriverWait wait = <span class="keyword">new</span> WebDriverWait(driver, Duration.<span class="method">ofSeconds</span>(<span class="string">10</span>));
+    <span class="comment">// Fill form with test data</span>
+    usernameField.<span class="method">sendKeys</span>(<span class="string">"testuser"</span>);
+    emailField.<span class="method">sendKeys</span>(<span class="string">"test@example.com"</span>);
+    
+    Select departmentDropdown = <span class="keyword">new</span> Select(departmentSelect);
+    departmentDropdown.<span class="method">selectByValue</span>(<span class="string">"IT"</span>);
+    
+    commentsField.<span class="method">sendKeys</span>(<span class="string">"This is a test comment"</span>);
+    <span class="comment">// Test form submission with confirm dialog</span>
+    submitButton.<span class="method">click</span>();
+    
+    Alert submitConfirm = wait.<span class="method">until</span>(ExpectedConditions.<span class="method">alertIsPresent</span>());
+    String confirmText = submitConfirm.<span class="method">getText</span>();
+    
+    <span class="comment">// Verify confirmation dialog contains form data</span>
+    Assertions.<span class="method">assertTrue</span>(confirmText.<span class="method">contains</span>(<span class="string">"testuser"</span>));
+    Assertions.<span class="method">assertTrue</span>(confirmText.<span class="method">contains</span>(<span class="string">"test@example.com"</span>));
+    Assertions.<span class="method">assertTrue</span>(confirmText.<span class="method">contains</span>(<span class="string">"IT"</span>));
+    Assertions.<span class="method">assertTrue</span>(confirmText.<span class="method">contains</span>(<span class="string">"This is a test comment"</span>));
+    
+    submitConfirm.<span class="method">accept</span>();
+    
+    <span class="comment">// Verify success alert</span>
+    Alert successAlert = wait.<span class="method">until</span>(ExpectedConditions.<span class="method">alertIsPresent</span>());
+    String successText = successAlert.<span class="method">getText</span>();
+    Assertions.<span class="method">assertEquals</span>(<span class="string">"Form submitted successfully!"</span>, successText);
+    successAlert.<span class="method">accept</span>();
+    
+    Thread.<span class="method">sleep</span>(<span class="string">1000</span>);
+    String resultText = formResult.<span class="method">getText</span>();
+    Assertions.<span class="method">assertTrue</span>(resultText.<span class="method">contains</span>(<span class="string">"Form submitted successfully"</span>));
+}</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript functions for alerts
+        function showSimpleAlert() {
+            alert('This is a simple alert message!')
+            logAlertResult('Simple alert displayed and accepted')
+        }
+
+        function showWarningAlert() {
+            alert('Warning: This action cannot be undone!')
+            logAlertResult('Warning alert displayed and accepted')
+        }
+
+        function showSuccessAlert() {
+            alert('Success: Operation completed successfully!')
+            logAlertResult('Success alert displayed and accepted')
+        }
+
+        function showErrorAlert() {
+            alert('Error: Something went wrong!')
+            logAlertResult('Error alert displayed and accepted')
+        }
+
+        function showDeleteConfirm() {
+            const result = confirm('Are you sure you want to delete this item?')
+            if (result) {
+                logConfirmResult('Delete confirmed')
+            } else {
+                logConfirmResult('Delete cancelled')
+            }
+        }
+
+        function showNavigationConfirm() {
+            const result = confirm('You have unsaved changes. Are you sure you want to leave this page?')
+            if (result) {
+                logConfirmResult('Navigation confirmed')
+            } else {
+                logConfirmResult('Navigation cancelled')
+            }
+        }
+
+        function showSaveConfirm() {
+            const result = confirm('Do you want to save your changes before proceeding?')
+            if (result) {
+                logConfirmResult('Save confirmed')
+            } else {
+                logConfirmResult('Save cancelled')
+            }
+        }
+
+        function showResetConfirm() {
+            const result = confirm('Resetting the form will clear all entered data. Continue?')
+            if (result) {
+                logConfirmResult('Reset confirmed')
+                document.getElementById('alert-form').reset()
+            } else {
+                logConfirmResult('Reset cancelled')
+            }
+        }
+
+        function showNamePrompt() {
+            const name = prompt('Please enter your name:')
+            if (name !== null && name.trim() !== '') {
+                logPromptResult(`Name entered: ${name}`)
+            } else if (name === null) {
+                logPromptResult('Name prompt cancelled')
+            } else {
+                logPromptResult('Name prompt submitted with empty value')
+            }
+        }
+
+        function showAgePrompt() {
+            const age = prompt('Please enter your age:')
+            if (age !== null && age.trim() !== '') {
+                logPromptResult(`Age entered: ${age}`)
+            } else if (age === null) {
+                logPromptResult('Age prompt cancelled')
+            } else {
+                logPromptResult('Age prompt submitted with empty value')
+            }
+        }
+
+        function showEmailPrompt() {
+            const email = prompt('Please enter your email address:')
+            if (email !== null && email.trim() !== '') {
+                logPromptResult(`Email entered: ${email}`)
+            } else if (email === null) {
+                logPromptResult('Email prompt cancelled')
+            } else {
+                logPromptResult('Email prompt submitted with empty value')
+            }
+        }
+
+        function showPasswordPrompt() {
+            const password = prompt('Please enter your password:')
+            if (password !== null && password.trim() !== '') {
+                logPromptResult('Password entered (hidden for security)')
+            } else if (password === null) {
+                logPromptResult('Password prompt cancelled')
+            } else {
+                logPromptResult('Password prompt submitted with empty value')
+            }
+        }
+
+        function handleFormSubmit(event) {
+            event.preventDefault()
+            
+            const formData = new FormData(event.target)
+            const username = formData.get('username') || 'Not provided'
+            const email = formData.get('email') || 'Not provided'
+            const department = formData.get('department') || 'Not provided'
+            const comments = formData.get('comments') || 'Not provided'
+            
+            const confirmMessage = `Form Submission Summary:\n\nUsername: ${username}\nEmail: ${email}\nDepartment: ${department}\nComments: ${comments}\n\nDo you want to submit this form?`
+            
+            const result = confirm(confirmMessage)
+            if (result) {
+                alert('Form submitted successfully!')
+                logFormResult('Form submitted successfully')
+                event.target.reset()
+            } else {
+                logFormResult('Form submission cancelled')
+            }
+        }
+
+        function clearForm() {
+            const result = confirm('Are you sure you want to clear all form data?')
+            if (result) {
+                document.getElementById('alert-form').reset()
+                logFormResult('Form cleared successfully')
+            } else {
+                logFormResult('Form clearing cancelled')
+            }
+        }
+
+        function confirmFormReset() {
+            const result = confirm('Resetting the form will clear all entered data. Continue?')
+            if (result) {
+                document.getElementById('alert-form').reset()
+                logFormResult('Form reset successfully')
+            } else {
+                logFormResult('Form reset cancelled')
+            }
+        }
+
+        // Helper functions to log results
+        function logAlertResult(message) {
+            const resultDiv = document.getElementById('alert-result')
+            if (resultDiv) {
+                const timestamp = new Date().toLocaleTimeString()
+                resultDiv.textContent += `[${timestamp}] ${message}\n`
+                resultDiv.scrollTop = resultDiv.scrollHeight
+            }
+        }
+
+        function logConfirmResult(message) {
+            const resultDiv = document.getElementById('confirm-result')
+            if (resultDiv) {
+                const timestamp = new Date().toLocaleTimeString()
+                resultDiv.textContent += `[${timestamp}] ${message}\n`
+                resultDiv.scrollTop = resultDiv.scrollHeight
+            }
+        }
+
+        function logPromptResult(message) {
+            const resultDiv = document.getElementById('prompt-result')
+            if (resultDiv) {
+                const timestamp = new Date().toLocaleTimeString()
+                resultDiv.textContent += `[${timestamp}] ${message}\n`
+                resultDiv.scrollTop = resultDiv.scrollHeight
+            }
+        }
+
+        function logFormResult(message) {
+            const resultDiv = document.getElementById('form-result')
+            if (resultDiv) {
+                const timestamp = new Date().toLocaleTimeString()
+                resultDiv.textContent += `[${timestamp}] ${message}\n`
+                resultDiv.scrollTop = resultDiv.scrollHeight
+            }
+        }
+    </script>
+</body>

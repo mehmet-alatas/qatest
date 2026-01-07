@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Elements - Selenium Training</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .section {
+            margin-bottom: 40px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .section h2 {
+            color: #555;
+            margin-bottom: 15px;
+            grid-column: 1 / -1;
+        }
+        .practice-area {
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+        }
+        .code-area {
+            padding: 15px;
+            background-color: #1e1e1e;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        .code-area h3 {
+            color: #4CAF50;
+            margin-top: 0;
+            font-size: 16px;
+        }
+        .code-area pre {
+            margin: 0;
+            font-size: 12px;
+            color: #f8f8f2;
+            line-height: 1.4;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .keyword { color: #66d9ef; }
+        .string { color: #a6e22e; }
+        .comment { color: #75715e; }
+        .annotation { color: #f92672; }
+        .method { color: #a6e22e; }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="number"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        input[type="checkbox"],
+        input[type="radio"] {
+            margin-right: 8px;
+        }
+        .checkbox-group,
+        .radio-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .checkbox-item,
+        .radio-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f8f9fa;
+        }
+        .checkbox-item:hover,
+        .radio-item:hover {
+            background-color: #e9ecef;
+        }
+        .button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        .range-container {
+            margin: 15px 0;
+        }
+        .range-value {
+            display: inline-block;
+            margin-left: 10px;
+            font-weight: bold;
+            color: #007bff;
+        }
+        @media (max-width: 768px) {
+            .section {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Form Elements Practice with Selenium Test Examples</h1>
+        
+        <div class="section">
+            <h2>Checkboxes</h2>
+            <div class="practice-area">
+                <div class="form-group">
+                    <label>Select your interests:</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="sports" name="interests" value="sports">
+                            <label for="sports">Sports</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="music" name="interests" value="music">
+                            <label for="music">Music</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="reading" name="interests" value="reading">
+                            <label for="reading">Reading</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="travel" name="interests" value="travel">
+                            <label for="travel">Travel</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="cooking" name="interests" value="cooking">
+                            <label for="cooking">Cooking</label>
+                        </div>
+                    </div>
+                </div>
+                <button class="button" onclick="getCheckboxValues()">Get Checkbox Values</button>
+                <button class="button" onclick="selectAllCheckboxes()">Select All</button>
+                <button class="button" onclick="clearAllCheckboxes()">Clear All</button>
+                <div id="checkbox-result" class="result"></div>
+            </div>
+            <div class="code-area">
+                <h3>Selenium Test Code - Checkboxes</h3>
+                <pre><code><span class="annotation">@Test</span>
+<span class="keyword">public void</span> <span class="method">checkBoxTest</span>() {
+
+    <span class="comment">// Finding checkbox elements</span>
+    WebElement sportsCheckBox = driver.<span class="method">findElement</span>(By.<span class="method">id</span>(<span class="string">"sports"</span>));
+    WebElement musicCheckBox = driver.<span class="method">findElement</span>(By.<span class="method">id</span>(<span class="string">"music"</span>));
+    WebElement readingCheckBox = driver.<span class="method">findElement</span>(By.<span class="method">id</span>(<span class="string">"reading"</span>));
+    WebElement travelCheckBox = driver.<span class="method">findElement</span>(By.<span class="method">id</span>(<span class="string">"travel"</span>));
+    WebElement cookingCheckBox = driver.<span class="method">findElement</span>(By.<span class="method">id</span>(<span class="string">"cooking"</span>));
+    WebElement getCheckBoxButton = driver.<span class="method">findElement</span>(By.<span class="method">xpath</span>(<span class="string">"//button[@onclick='getCheckboxValues()']"</span>));
+    WebElement resultBox = driver.<span class="method">findElement</span>(By.<span class="method">id</span>(<span class="string">"checkbox-result"</span>));
+
+    <span class="comment">// Verify elements are displayed</span>
+    Assertions.<span class="method">assertTrue</span>(sportsCheckBox.<span class="method">isDisplayed</span>());
+    Assertions.<span class="method">assertTrue</span>(musicCheckBox.<span class="method">isDisplayed</span>());
+    Assertions.<span class="method">assertTrue</span>(readingCheckBox.<span class="method">isDisplayed</span>());
+    Assertions.<span class="method">assertTrue</span>(travelCheckBox.<span class="method">isDisplayed</span>());
+    Assertions.<span class="method">assertTrue</span>(cookingCheckBox.<span class="method">isDisplayed</span>());
+
+    <span class="comment">// Select checkboxes if not already selected</span>
+    <span class="keyword">if</span> (!musicCheckBox.<span class="method">isSelected</span>()){
+        musicCheckBox.<span class="method">click</span>();
+    }
+
+    <span class="keyword">if</span> (!cookingCheckBox.<span class="method">isSelected</span>()){
+        cookingCheckBox.<span class="method">click</span>();
+    }
+
+    <span class="keyword">if</span> (!travelCheckBox.<span class="method">isSelected</span>()){
+        travelCheckBox.<span class="method">click</span>();
+    }
+
+    getCheckBoxButton.<span class="method">click</span>();
+
+    <span class="comment">// Verify result</span>
+    String expectedResult = <span class="string">"Selected interests: music, travel, cooking"</span>;
+    String actualResult = resultBox.<span class="method">getText</span>();
+
+    Assertions.<span class="method">assertEquals</span>(expectedResult, actualResult);
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Radio Buttons</h2>
+            <div class="practice-area">
+                <div class="form-group">
+                    <label>Select your preferred contact method:</label>
+                    <div class="radio-group">
+                        <div class="radio-item">
+                            <input type="radio" id="email-contact" name="contact" value="email">
+                            <label for="email-contact">Email</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="phone-contact" name="contact" value="phone">
+                            <label for="phone-contact">Phone</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="sms-contact" name="contact" value="sms">
+                            <label for="sms-contact">SMS</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="mail-contact" name="contact" value="mail">
+                            <label for="mail-contact">Mail</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Select your experience level:</label>
+                    <div class="radio-group">
+                        <div class="radio-item">
+                            <input type="radio" id="beginner" name="experience" value="beginner">
+                            <label for="beginner">Beginner</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="intermediate" name="experience" value="intermediate">
+                            <label for="intermediate">Intermediate</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="advanced" name="experience" value="advanced">
+                            <label for="advanced">Advanced</label>
+                        </div>
+                    </div>
+                </div>
+                <button class="button" onclick="getRadioValues()">Get Radio Values</button>
+                <div id="radio-result" class="result"></div>
+            </div>
+            <div class="code-area">
+                <h3>Selenium Test Code - Radio Buttons</h3>
+                <pre><code><span class="annotation">@Test</span>
+<span class="keyword">public void</span> <span class="method">radioButtonsTest</span>() {
+
+    <span class="comment">// Finding contact method radio buttons</span>
+    WebElement emailRadioButton = driver.<span class="method">findElement</span>(By.<span class="method">id</span>(<span class="string">"email-contact"</span>));
+    WebElement phoneButton = driver.<span class="method">findElement</span>(By.<span class="method">id</span>(<span class="string">"phone-contact"</span>));
+    WebElement smsButton = driver.<span class="method">findElement</span>(By.<span class="method">id</span>(<span class="string">"sms-contact"</span>));
+    WebElement mailRadioButton = driver.<span class="method">findElement</span>(By.<span class="method">id</span>(<span class="string">"mail-contact"</span>));
+
+    <span class="comment">// Verify contact radio buttons are displayed</span>
+    Assertions.<span class="method">assertTrue</span>(emailRadioButton.<span class="method">isDisplayed</span>());
+    Assertions.<span class="method">assertTrue</span>(phoneButton.<span class="method">isDisplayed</span>());
+    Assertions.<span class="method">assertTrue</span>(smsButton.<span class="method">isDisplayed</span>());
+    Assertions.<span class="method">assertTrue</span>(mailRadioButton.<span class="method">isDisplayed</span>());
+
+    <span class="comment">// Finding experience level radio buttons</span>
+    WebElement beginnerRadioButton = driver.<span class="method">findElement</span>(By.<span class="method">id</span>(<span class="string">"beginner"</span>));
+    WebElement intermediateRadioButton = driver.<span class="method">findElement</span>(By.<span class="method">id</span>(<span class="string">"intermediate"</span>));
+    WebElement advancedRadioButton = driver.<span class="method">findElement</span>(By.<span class="method">id</span>(<span class="string">"advanced"</span>));
+    WebElement getRadioValuesButton = driver.<span class="method">findElement</span>(By.<span class="method">xpath</span>(<span class="string">"//button[@onclick='getRadioValues()']"</span>));
+    WebElement radioResultBox = driver.<span class="method">findElement</span>(By.<span class="method">id</span>(<span class="string">"radio-result"</span>));
+
+    <span class="comment">// Verify experience radio buttons are displayed</span>
+    Assertions.<span class="method">assertTrue</span>(beginnerRadioButton.<span class="method">isDisplayed</span>());
+    Assertions.<span class="method">assertTrue</span>(intermediateRadioButton.<span class="method">isDisplayed</span>());
+    Assertions.<span class="method">assertTrue</span>(advancedRadioButton.<span class="method">isDisplayed</span>());
+    Assertions.<span class="method">assertTrue</span>(getRadioValuesButton.<span class="method">isDisplayed</span>());
+
+    <span class="comment">// Select radio buttons</span>
+    emailRadioButton.<span class="method">click</span>();
+    advancedRadioButton.<span class="method">click</span>();
+    getRadioValuesButton.<span class="method">click</span>();
+
+    <span class="comment">// Verify result</span>
+    String expectedResult = <span class="string">"Contact method: email\n"</span> +
+                            <span class="string">"Experience level: advanced"</span>;
+
+    String actualResult = radioResultBox.<span class="method">getText</span>();
+
+    Assertions.<span class="method">assertEquals</span>(expectedResult, actualResult);
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Text Input Fields</h2>
+            <div class="practice-area">
+                <div class="form-group">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" placeholder="Enter your username">
+                </div>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" placeholder="Enter your password">
+                </div>
+                <div class="form-group">
+                    <label for="number">Age:</label>
+                    <input type="number" id="number" name="number" min="1" max="120" placeholder="Enter your age">
+                </div>
+                <button class="button" onclick="getTextValues()">Get Text Values</button>
+                <button class="button" onclick="clearTextFields()">Clear Fields</button>
+                <div id="text-result" class="result"></div>
+            </div>
+            <div class="code-area">
+                <h3>Selenium Test Code - Text Input Fields</h3>
+                <pre><code><span class="annotation">@Test</span>
+<span class="keyword">public void</span> <span class="method">textInputFieldsTest</span>() <span class="keyword">throws</span> InterruptedException {
+
+    <span class="comment">// Finding text input elements</span>
+    WebElement usernameTextBox = driver.<span class="method">findElement</span>(By.<span class="method">id</span>(<span class="string">"username"</span>));
+    WebElement emailTextBox = driver.<span class="method">findElement</span>(By.<span class="method">id</span>(<span class="string">"email"</span>));
+    WebElement passwordTextBox = driver.<span class="method">findElement</span>(By.<span class="method">id</span>(<span class="string">"password"</span>));
+    WebElement ageTextBox = driver.<span class="method">findElement</span>(By.<span class="method">id</span>(<span class="string">"number"</span>));
+    WebElement getTextValuesButton = driver.<span class="method">findElement</span>(By.<span class="method">xpath</span>(<span class="string">"//button[@onclick='getTextValues()']"</span>));
+    WebElement clearFieldsButton = driver.<span class="method">findElement</span>(By.<span class="method">xpath</span>(<span class="string">"//button[@onclick='clearTextFields()']"</span>));
+    WebElement textResult = driver.<span class="method">findElement</span>(By.<span class="method">id</span>(<span class="string">"text-result"</span>));
+
+    <span class="comment">// Enter text values</span>
+    usernameTextBox.<span class="method">sendKeys</span>(<span class="string">"john"</span>);
+    emailTextBox.<span class="method">sendKeys</span>(<span class="string">"john@gmaill.com"</span>);
+    passwordTextBox.<span class="method">sendKeys</span>(<span class="string">"john123?"</span>);
+    ageTextBox.<span class="method">sendKeys</span>(<span class="string">"33"</span>);
+
+    getTextValuesButton.<span class="method">click</span>();
+
+    <span class="comment">// Verify entered values</span>
+    String expectedResult = <span class="string">"Username: john\n"</span> +
+             <span class="string">"Email: john@gmailll.com\n"</span> +
+             <span class="string">"Password: ***\n"</span> +
+             <span class="string">"Age: 33"</span>;
+
+    String actualResult = textResult.<span class="method">getText</span>();
+
+    Assertions.<span class="method">assertEquals</span>(expectedResult, actualResult);
+
+    Thread.<span class="method">sleep</span>(<span class="string">3000</span>);
+
+    <span class="comment">// Test clear button</span>
+    clearFieldsButton.<span class="method">click</span>();
+
+    String clearedExpectedResult = <span class="string">"Username: \n"</span> +
+            <span class="string">"Email: \n"</span> +
+            <span class="string">"Password: \n"</span> +
+            <span class="string">"Age: "</span>;
+
+    String clearedActualResult = textResult.<span class="method">getText</span>();
+
+    Assertions.<span class="method">assertEquals</span>(clearedExpectedResult, clearedActualResult);
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Toggle Switch</h2>
+            <div class="practice-area">
+                <div class="form-group">
+                    <label for="toggle">Enable Notifications:</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="toggle" onchange="handleToggle(this)">
+                        <span class="slider"></span>
+                    </label>
+                    <span id="toggle-status">Disabled</span>
+                </div>
+            </div>
+            <div class="code-area">
+                <h3>Selenium Test Code - Toggle Switch</h3>
+                <pre><code><span class="annotation">@Test</span>
+<span class="keyword">public void</span> <span class="method">toggleSwitchTest</span>() {
+
+    <span class="comment">// Finding toggle switch elements</span>
+    WebElement toggleSwitch = driver.<span class="method">findElement</span>(By.<span class="method">id</span>(<span class="string">"toggle"</span>));
+    WebElement toggleStatus = driver.<span class="method">findElement</span>(By.<span class="method">id</span>(<span class="string">"toggle-status"</span>));
+
+    <span class="comment">// Verify initial state</span>
+    Assertions.<span class="method">assertFalse</span>(toggleSwitch.<span class="method">isSelected</span>());
+    Assertions.<span class="method">assertEquals</span>(<span class="string">"Disabled"</span>, toggleStatus.<span class="method">getText</span>());
+
+    <span class="comment">// Toggle switch on</span>
+    toggleSwitch.<span class="method">click</span>();
+
+    <span class="comment">// Verify enabled state</span>
+    Assertions.<span class="method">assertTrue</span>(toggleSwitch.<span class="method">isSelected</span>());
+    Assertions.<span class="method">assertEquals</span>(<span class="string">"Enabled"</span>, toggleStatus.<span class="method">getText</span>());
+
+    <span class="comment">// Toggle switch off</span>
+    toggleSwitch.<span class="method">click</span>();
+
+    <span class="comment">// Verify disabled state</span>
+    Assertions.<span class="method">assertFalse</span>(toggleSwitch.<span class="method">isSelected</span>());
+    Assertions.<span class="method">assertEquals</span>(<span class="string">"Disabled"</span>, toggleStatus.<span class="method">getText</span>());
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Range Slider</h2>
+            <div class="practice-area">
+                <div class="range-container">
+                    <label for="range">Volume: <span class="range-value" id="range-value">50</span></label>
+                    <input type="range" id="range" name="range" min="0" max="100" value="50" oninput="updateRangeValue(this.value)">
+                </div>
+                <div class="range-container">
+                    <label for="brightness">Brightness: <span class="range-value" id="brightness-value">75</span></label>
+                    <input type="range" id="brightness" name="brightness" min="0" max="100" value="75" oninput="updateBrightnessValue(this.value)">
+                </div>
+            </div>
+            <div class="code-area">
+                <h3>Selenium Test Code - Range Slider</h3>
+                <pre><code><span class="annotation">@Test</span>
+<span class="keyword">public void</span> <span class="method">rangeSliderTest</span>() <span class="keyword">throws</span> InterruptedException {
+
+    <span class="comment">// Finding range slider elements</span>
+    WebElement volumeSlider = driver.<span class="method">findElement</span>(By.<span class="method">id</span>(<span class="string">"range"</span>));
+    WebElement brightnessSlider = driver.<span class="method">findElement</span>(By.<span class="method">id</span>(<span class="string">"brightness"</span>));
+    WebElement volumeValue = driver.<span class="method">findElement</span>(By.<span class="method">id</span>(<span class="string">"range-value"</span>));
+    WebElement brightnessValue = driver.<span class="method">findElement</span>(By.<span class="method">id</span>(<span class="string">"brightness-value"</span>));
+
+    <span class="comment">// Verify initial values</span>
+    Assertions.<span class="method">assertEquals</span>(<span class="string">"50"</span>, volumeSlider.<span class="method">getAttribute</span>(<span class="string">"value"</span>));
+    Assertions.<span class="method">assertEquals</span>(<span class="string">"75"</span>, brightnessSlider.<span class="method">getAttribute</span>(<span class="string">"value"</span>));
+
+    <span class="comment">// Using Actions class to move slider</span>
+    Actions actions = <span class="keyword">new</span> Actions(driver);
+
+    <span class="comment">// Move volume slider to 80</span>
+    actions.<span class="method">clickAndHold</span>(volumeSlider)
+           .<span class="method">moveByOffset</span>(<span class="string">60</span>, <span class="string">0</span>)
+           .<span class="method">release</span>()
+           .<span class="method">perform</span>();
+
+    Thread.<span class="method">sleep</span>(<span class="string">1000</span>);
+
+    <span class="comment">// Verify volume slider changed</span>
+    String volumeAfter = volumeSlider.<span class="method">getAttribute</span>(<span class="string">"value"</span>);
+    Assertions.<span class="method">assertNotEquals</span>(<span class="string">"50"</span>, volumeAfter);
+
+    <span class="comment">// Alternative: Using sendKeys for precise value</span>
+    volumeSlider.<span class="method">clear</span>();
+    volumeSlider.<span class="method">sendKeys</span>(<span class="string">"90"</span>);
+    
+    Assertions.<span class="method">assertEquals</span>(<span class="string">"90"</span>, volumeSlider.<span class="method">getAttribute</span>(<span class="string">"value"</span>));
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Textarea</h2>
+            <div class="practice-area">
+                <div class="form-group">
+                    <label for="comments">Comments:</label>
+                    <textarea id="comments" name="comments" rows="4" placeholder="Enter your comments here..."></textarea>
+                </div>
+                <button class="button" onclick="getComments()">Get Comments</button>
+                <button class="button" onclick="clearComments()">Clear Comments</button>
+                <div id="comments-result" class="result"></div>
+            </div>
+            <div class="code-area">
+                <h3>Selenium Test Code - Textarea</h3>
+                <pre><code><span class="annotation">@Test</span>
+<span class="keyword">public void</span> <span class="method">textareaTest</span>() {
+
+    <span class="comment">// Finding textarea elements</span>
+    WebElement commentsTextarea = driver.<span class="method">findElement</span>(By.<span class="method">id</span>(<span class="string">"comments"</span>));
+    WebElement getCommentsButton = driver.<span class="method">findElement</span>(By.<span class="method">xpath</span>(<span class="string">"//button[@onclick='getComments()']"</span>));
+    WebElement clearCommentsButton = driver.<span class="method">findElement</span>(By.<span class="method">xpath</span>(<span class="string">"//button[@onclick='clearComments()']"</span>));
+    WebElement commentsResult = driver.<span class="method">findElement</span>(By.<span class="method">id</span>(<span class="string">"comments-result"</span>));
+
+    <span class="comment">// Verify textarea is displayed</span>
+    Assertions.<span class="method">assertTrue</span>(commentsTextarea.<span class="method">isDisplayed</span>());
+
+    <span class="comment">// Enter text in textarea</span>
+    String commentText = <span class="string">"This is a test comment for Selenium automation."</span>;
+    commentsTextarea.<span class="method">sendKeys</span>(commentText);
+
+    <span class="comment">// Get comments and verify</span>
+    getCommentsButton.<span class="method">click</span>();
+
+    String expectedResult = <span class="string">"Comments: "</span> + commentText;
+    String actualResult = commentsResult.<span class="method">getText</span>();
+
+    Assertions.<span class="method">assertEquals</span>(expectedResult, actualResult);
+
+    <span class="comment">// Test clear functionality</span>
+    clearCommentsButton.<span class="method">click</span>();
+
+    String clearedExpectedResult = <span class="string">"No comments entered"</span>;
+    String clearedActualResult = commentsResult.<span class="method">getText</span>();
+
+    Assertions.<span class="method">assertEquals</span>(clearedExpectedResult, clearedActualResult);
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Form Actions</h2>
+            <div class="practice-area">
+                <button class="button" onclick="submitForm()">Submit Form</button>
+                <button class="button" onclick="resetForm()">Reset Form</button>
+                <div id="form-result" class="result"></div>
+            </div>
+            <div class="code-area">
+                <h3>Selenium Test Code - Form Actions</h3>
+                <pre><code><span class="annotation">@Test</span>
+<span class="keyword">public void</span> <span class="method">formSubmissionTest</span>() {
+
+    <span class="comment">// Fill out form with sample data</span>
+    driver.<span class="method">findElement</span>(By.<span class="method">id</span>(<span class="string">"sports"</span>)).<span class="method">click</span>();
+    driver.<span class="method">findElement</span>(By.<span class="method">id</span>(<span class="string">"music"</span>)).<span class="method">click</span>();
+    driver.<span class="method">findElement</span>(By.<span class="method">id</span>(<span class="string">"email-contact"</span>)).<span class="method">click</span>();
+    driver.<span class="method">findElement</span>(By.<span class="method">id</span>(<span class="string">"advanced"</span>)).<span class="method">click</span>();
+    
+    WebElement usernameField = driver.<span class="method">findElement</span>(By.<span class="method">id</span>(<span class="string">"username"</span>));
+    usernameField.<span class="method">clear</span>();
+    usernameField.<span class="method">sendKeys</span>(<span class="string">"testuser"</span>);
+    
+    WebElement emailField = driver.<span class="method">findElement</span>(By.<span class="method">id</span>(<span class="string">"email"</span>));
+    emailField.<span class="method">clear</span>();
+    emailField.<span class="method">sendKeys</span>(<span class="string">"test@example.com"</span>);
+    
+    WebElement commentsField = driver.<span class="method">findElement</span>(By.<span class="method">id</span>(<span class="string">"comments"</span>));
+    commentsField.<span class="method">clear</span>();
+    commentsField.<span class="method">sendKeys</span>(<span class="string">"Test comment"</span>);
+    
+    <span class="comment">// Submit form</span>
+    WebElement submitButton = driver.<span class="method">findElement</span>(By.<span class="method">xpath</span>(<span class="string">"//button[@onclick='submitForm()']"</span>));
+    WebElement formResult = driver.<span class="method">findElement</span>(By.<span class="method">id</span>(<span class="string">"form-result"</span>));
+    
+    submitButton.<span class="method">click</span>();
+    
+    <span class="comment">// Verify form submission</span>
+    String result = formResult.<span class="method">getText</span>();
+    Assertions.<span class="method">assertTrue</span>(result.<span class="method">contains</span>(<span class="string">"Form submitted with data:"</span>));
+    Assertions.<span class="method">assertTrue</span>(result.<span class="method">contains</span>(<span class="string">"testuser"</span>));
+    Assertions.<span class="method">assertTrue</span>(result.<span class="method">contains</span>(<span class="string">"test@example.com"</span>));
+}</code></pre>
+            </div>
+        </div>
+
+        <!-- Test Cases Documentation Section -->
+        <div style="margin-top: 50px; padding: 20px; background-color: #f8f9fa; border-radius: 8px;">
+            <h2 style="color: #333; text-align: center; margin-bottom: 30px;">Test Cases Documentation</h2>
+            
+            <!-- Checkbox Test Cases -->
+            <div style="margin-bottom: 30px; padding: 20px; background-color: white; border-radius: 5px; border-left: 4px solid #007bff;">
+                <h3 style="color: #007bff; margin-top: 0;">Checkbox Test Cases</h3>
+                
+                <div style="margin-bottom: 20px; padding: 15px; background-color: #f8f9fa; border-radius: 4px;">
+                    <h4 style="color: #333; margin-bottom: 10px;">Test Case 1.1: Basic Checkbox Selection Test</h4>
+                    <p><strong>Test ID:</strong> TC_CHECKBOX_001</p>
+                    <p><strong>Objective:</strong> Verify that checkboxes can be selected and their values are correctly displayed</p>
+                    <p><strong>Test Steps:</strong></p>
+                    <ol style="margin: 10px 0 10px 20px;">
+                        <li>Locate all checkbox elements (sports, music, reading, travel, cooking)</li>
+                        <li>Verify all checkbox elements are displayed</li>
+                        <li>Select "Music", "Cooking", and "Travel" checkboxes</li>
+                        <li>Click "Get Checkbox Values" button</li>
+                        <li>Verify result displays: "Selected interests: music, travel, cooking"</li>
+                    </ol>
+                    <p><strong>Test Data:</strong> music, travel, cooking</p>
+                </div>
+                
+                <div style="margin-bottom: 20px; padding: 15px; background-color: #f8f9fa; border-radius: 4px;">
+                    <h4 style="color: #333; margin-bottom: 10px;">Test Case 1.2: Select All and Clear All Test</h4>
+                    <p><strong>Test ID:</strong> TC_CHECKBOX_002</p>
+                    <p><strong>Objective:</strong> Verify "Select All" and "Clear All" buttons work correctly</p>
+                    <p><strong>Test Steps:</strong></p>
+                    <ol style="margin: 10px 0 10px 20px;">
+                        <li>Click "Select All" button</li>
+                        <li>Verify all checkboxes are selected</li>
+                        <li>Verify result shows: "Selected interests: sports, music, reading, travel, cooking"</li>
+                        <li>Click "Clear All" button</li>
+                        <li>Verify result shows: "No interests selected"</li>
+                    </ol>
+                </div>
+            </div>
+
+            <!-- Radio Button Test Cases -->
+            <div style="margin-bottom: 30px; padding: 20px; background-color: white; border-radius: 5px; border-left: 4px solid #28a745;">
+                <h3 style="color: #28a745; margin-top: 0;">Radio Button Test Cases</h3>
+                
+                <div style="margin-bottom: 20px; padding: 15px; background-color: #f8f9fa; border-radius: 4px;">
+                    <h4 style="color: #333; margin-bottom: 10px;">Test Case 2.1: Radio Button Selection Test</h4>
+                    <p><strong>Test ID:</strong> TC_RADIO_001</p>
+                    <p><strong>Objective:</strong> Verify radio buttons can be selected and only one option per group is selectable</p>
+                    <p><strong>Test Steps:</strong></p>
+                    <ol style="margin: 10px 0 10px 20px;">
+                        <li>Verify all contact method radio buttons are displayed</li>
+                        <li>Verify all experience level radio buttons are displayed</li>
+                        <li>Select "Email" from contact method options</li>
+                        <li>Select "Advanced" from experience level options</li>
+                        <li>Click "Get Radio Values" button</li>
+                        <li>Verify result displays: "Contact method: email\nExperience level: advanced"</li>
+                    </ol>
+                    <p><strong>Test Data:</strong> email, advanced</p>
+                </div>
+            </div>
+
+            <!-- Text Input Test Cases -->
+            <div style="margin-bottom: 30px; padding: 20px; background-color: white; border-radius: 5px; border-left: 4px solid #ffc107;">
+                <h3 style="color: #e67e22; margin-top: 0;">Text Input Fields Test Cases</h3>
+                
+                <div style="margin-bottom: 20px; padding: 15px; background-color: #f8f9fa; border-radius: 4px;">
+                    <h4 style="color: #333; margin-bottom: 10px;">Test Case 3.1: Text Input Fields Data Entry Test</h4>
+                    <p><strong>Test ID:</strong> TC_TEXTINPUT_001</p>
+                    <p><strong>Objective:</strong> Verify text input fields accept data and display correctly</p>
+                    <p><strong>Test Steps:</strong></p>
+                    <ol style="margin: 10px 0 10px 20px;">
+                        <li>Enter "john" in username field</li>
+                        <li>Enter "john@gmailll.com" in email field</li>
+                        <li>Enter "john123?" in password field</li>
+                        <li>Enter "33" in age field</li>
+                        <li>Click "Get Text Values" button</li>
+                        <li>Verify result shows entered data (password masked with ***)</li>
+                        <li>Click "Clear Fields" button and verify fields are cleared</li>
+                    </ol>
+                    <p><strong>Test Data:</strong> Username: john, Email: john@gmailll.com, Password: john123?, Age: 33</p>
+                </div>
+            </div>
+
+            <!-- Toggle Switch Test Cases -->
+            <div style="margin-bottom: 30px; padding: 20px; background-color: white; border-radius: 5px; border-left: 4px solid #17a2b8;">
+                <h3 style="color: #17a2b8; margin-top: 0;">Toggle Switch Test Cases</h3>
+                
+                <div style="margin-bottom: 20px; padding: 15px; background-color: #f8f9fa; border-radius: 4px;">
+                    <h4 style="color: #333; margin-bottom: 10px;">Test Case 4.1: Toggle Switch State Change Test</h4>
+                    <p><strong>Test ID:</strong> TC_TOGGLE_001</p>
+                    <p><strong>Objective:</strong> Verify toggle switch changes state and displays correct status</p>
+                    <p><strong>Test Steps:</strong></p>
+                    <ol style="margin: 10px 0 10px 20px;">
+                        <li>Verify initial state is "Disabled" and switch is not selected</li>
+                        <li>Click toggle switch to enable</li>
+                        <li>Verify switch is selected and status shows "Enabled"</li>
+                        <li>Click toggle switch again to disable</li>
+                        <li>Verify switch is not selected and status shows "Disabled"</li>
+                    </ol>
+                    <p><strong>Expected Results:</strong> Toggle switch should alternate between enabled/disabled states correctly</p>
+                </div>
+            </div>
+
+            <!-- Range Slider Test Cases -->
+            <div style="margin-bottom: 30px; padding: 20px; background-color: white; border-radius: 5px; border-left: 4px solid #6f42c1;">
+                <h3 style="color: #6f42c1; margin-top: 0;">Range Slider Test Cases</h3>
+                
+                <div style="margin-bottom: 20px; padding: 15px; background-color: #f8f9fa; border-radius: 4px;">
+                    <h4 style="color: #333; margin-bottom: 10px;">Test Case 5.1: Range Slider Value Manipulation Test</h4>
+                    <p><strong>Test ID:</strong> TC_RANGE_001</p>
+                    <p><strong>Objective:</strong> Verify range sliders can be manipulated and values are updated correctly</p>
+                    <p><strong>Test Steps:</strong></p>
+                    <ol style="margin: 10px 0 10px 20px;">
+                        <li>Verify initial values (Volume: 50, Brightness: 75)</li>
+                        <li>Use Actions class to move volume slider</li>
+                        <li>Verify volume value changes from initial position</li>
+                        <li>Use alternative methods (sendKeys/JavaScript) for precise value setting</li>
+                        <li>Verify final slider value and display value match</li>
+                    </ol>
+                    <p><strong>Test Data:</strong> Target volume value: 90</p>
+                </div>
+            </div>
+
+            <!-- Textarea Test Cases -->
+            <div style="margin-bottom: 30px; padding: 20px; background-color: white; border-radius: 5px; border-left: 4px solid #dc3545;">
+                <h3 style="color: #dc3545; margin-top: 0;">Textarea Test Cases</h3>
+                
+                <div style="margin-bottom: 20px; padding: 15px; background-color: #f8f9fa; border-radius: 4px;">
+                    <h4 style="color: #333; margin-bottom: 10px;">Test Case 6.1: Textarea Input and Clear Test</h4>
+                    <p><strong>Test ID:</strong> TC_TEXTAREA_001</p>
+                    <p><strong>Objective:</strong> Verify textarea accepts multi-line text input and can be cleared</p>
+                    <p><strong>Test Steps:</strong></p>
+                    <ol style="margin: 10px 0 10px 20px;">
+                        <li>Verify textarea is displayed</li>
+                        <li>Enter test comment text in textarea</li>
+                        <li>Click "Get Comments" button</li>
+                        <li>Verify comment is correctly displayed</li>
+                        <li>Click "Clear Comments" button</li>
+                        <li>Verify textarea is cleared and shows "No comments entered"</li>
+                    </ol>
+                    <p><strong>Test Data:</strong> "This is a test comment for Selenium automation."</p>
+                </div>
+            </div>
+
+            <!-- Form Actions Test Cases -->
+            <div style="margin-bottom: 30px; padding: 20px; background-color: white; border-radius: 5px; border-left: 4px solid #20c997;">
+                <h3 style="color: #20c997; margin-top: 0;">Form Actions Test Cases</h3>
+                
+                <div style="margin-bottom: 20px; padding: 15px; background-color: #f8f9fa; border-radius: 4px;">
+                    <h4 style="color: #333; margin-bottom: 10px;">Test Case 7.1: Complete Form Submission Test</h4>
+                    <p><strong>Test ID:</strong> TC_FORM_001</p>
+                    <p><strong>Objective:</strong> Verify complete form can be filled and submitted with all data intact</p>
+                    <p><strong>Test Steps:</strong></p>
+                    <ol style="margin: 10px 0 10px 20px;">
+                        <li>Select checkboxes (sports, music)</li>
+                        <li>Select radio buttons (email contact, advanced level)</li>
+                        <li>Fill username: "testuser"</li>
+                        <li>Fill email: "test@example.com"</li>
+                        <li>Fill comments: "Test comment"</li>
+                        <li>Click "Submit Form" button</li>
+                        <li>Verify form submission message appears</li>
+                        <li>Verify all submitted data is correctly displayed in JSON format</li>
+                    </ol>
+                    <p><strong>Test Data:</strong> Checkboxes: sports, music | Radio: email, advanced | Username: testuser | Email: test@example.com | Comments: Test comment</p>
+                </div>
+            </div>
+
+            <!-- Test Execution Guidelines -->
+            <div style="margin-bottom: 30px; padding: 20px; background-color: white; border-radius: 5px; border-left: 4px solid #6c757d;">
+                <h3 style="color: #6c757d; margin-top: 0;">Test Execution Guidelines</h3>
+                
+                <div style="padding: 15px; background-color: #f8f9fa; border-radius: 4px;">
+                    <h4 style="color: #333; margin-bottom: 10px;">Common Setup Requirements:</h4>
+                    <ul style="margin: 10px 0 10px 20px;">
+                        <li><strong>Browser:</strong> Chrome WebDriver</li>
+                        <li><strong>Timeouts:</strong> Implicit wait 15 seconds, Explicit wait 10 seconds</li>
+                        <li><strong>Window State:</strong> Maximized</li>
+                        <li><strong>Page Load:</strong> Complete before test execution</li>
+                    </ul>
+                    
+                    <h4 style="color: #333; margin-bottom: 10px;">Best Practices:</h4>
+                    <ul style="margin: 10px 0 10px 20px;">
+                        <li>Use WebDriverWait instead of Thread.sleep()</li>
+                        <li>Clear fields before entering data</li>
+                        <li>Verify element visibility before interaction</li>
+                        <li>Use explicit waits for dynamic content</li>
+                        <li>Proper cleanup after each test</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function getCheckboxValues() {
+            const checkboxes = document.querySelectorAll('input[name="interests"]:checked');
+            const values = Array.from(checkboxes).map(cb => cb.value);
+            document.getElementById('checkbox-result').textContent = 
+                values.length > 0 ? 'Selected interests: ' + values.join(', ') : 'No interests selected';
+        }
+
+        function selectAllCheckboxes() {
+            const checkboxes = document.querySelectorAll('input[name="interests"]');
+            checkboxes.forEach(cb => cb.checked = true);
+            getCheckboxValues();
+        }
+
+        function clearAllCheckboxes() {
+            const checkboxes = document.querySelectorAll('input[name="interests"]');
+            checkboxes.forEach(cb => cb.checked = false);
+            getCheckboxValues();
+        }
+
+        function getRadioValues() {
+            const contact = document.querySelector('input[name="contact"]:checked');
+            const experience = document.querySelector('input[name="experience"]:checked');
+            
+            let result = '';
+            result += contact ? 'Contact method: ' + contact.value + '\n' : 'No contact method selected\n';
+            result += experience ? 'Experience level: ' + experience.value : 'No experience level selected';
+            
+            document.getElementById('radio-result').textContent = result;
+        }
+
+        function getTextValues() {
+            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const number = document.getElementById('number').value;
+            
+            const result = `Username: ${username}\nEmail: ${email}\nPassword: ${password ? '***' : ''}\nAge: ${number}`;
+            document.getElementById('text-result').textContent = result;
+        }
+
+        function clearTextFields() {
+            document.getElementById('username').value = '';
+            document.getElementById('email').value = '';
+            document.getElementById('password').value = '';
+            document.getElementById('number').value = '';
+            getTextValues();
+        }
+
+        function handleToggle(checkbox) {
+            const status = document.getElementById('toggle-status');
+            status.textContent = checkbox.checked ? 'Enabled' : 'Disabled';
+        }
+
+        function updateRangeValue(value) {
+            document.getElementById('range-value').textContent = value;
+        }
+
+        function updateBrightnessValue(value) {
+            document.getElementById('brightness-value').textContent = value;
+        }
+
+        function getComments() {
+            const comments = document.getElementById('comments').value;
+            document.getElementById('comments-result').textContent = 
+                comments ? 'Comments: ' + comments : 'No comments entered';
+        }
+
+        function clearComments() {
+            document.getElementById('comments').value = '';
+            getComments();
+        }
+
+        function submitForm() {
+            const formData = {
+                interests: Array.from(document.querySelectorAll('input[name="interests"]:checked')).map(cb => cb.value),
+                contact: document.querySelector('input[name="contact"]:checked')?.value || null,
+                experience: document.querySelector('input[name="experience"]:checked')?.value || null,
+                username: document.getElementById('username').value,
+                email: document.getElementById('email').value,
+                age: document.getElementById('number').value,
+                notifications: document.getElementById('toggle').checked,
+                volume: document.getElementById('range').value,
+                brightness: document.getElementById('brightness').value,
+                comments: document.getElementById('comments').value
+            };
+            
+            document.getElementById('form-result').textContent = 
+                'Form submitted with data:\n' + JSON.stringify(formData, null, 2);
+        }
+
+        function resetForm() {
+            document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+            document.querySelectorAll('input[type="radio"]').forEach(rb => rb.checked = false);
+            document.querySelectorAll('input[type="text"], input[type="email"], input[type="password"], input[type="number"], textarea').forEach(input => input.value = '');
+            document.getElementById('toggle').checked = false;
+            document.getElementById('range').value = 50;
+            document.getElementById('brightness').value = 75;
+            updateRangeValue(50);
+            updateBrightnessValue(75);
+            handleToggle(document.getElementById('toggle'));
+            
+            // Clear all result displays
+            document.querySelectorAll('.result').forEach(result => result.textContent = '');
+        }
+    </script>
+</body>
+</html>

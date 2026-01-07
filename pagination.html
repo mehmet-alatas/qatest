@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagination - Selenium Training</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .section {
+            margin-bottom: 40px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .section h2 {
+            color: #555;
+            margin-bottom: 15px;
+        }
+        .button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+        .button.success {
+            background-color: #28a745;
+        }
+        .button.success:hover {
+            background-color: #218838;
+        }
+        .button.warning {
+            background-color: #ffc107;
+            color: #333;
+        }
+        .button.warning:hover {
+            background-color: #e0a800;
+        }
+        .button.danger {
+            background-color: #dc3545;
+        }
+        .button.danger:hover {
+            background-color: #c82333;
+        }
+        .button.secondary {
+            background-color: #6c757d;
+        }
+        .button.secondary:hover {
+            background-color: #545b62;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        .pagination button {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            background-color: white;
+            cursor: pointer;
+            border-radius: 4px;
+            min-width: 40px;
+            text-align: center;
+        }
+        .pagination button:hover {
+            background-color: #f8f9fa;
+        }
+        .pagination button.active {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+        .pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .pagination-info {
+            text-align: center;
+            margin: 10px 0;
+            color: #666;
+            font-size: 14px;
+        }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        .data-table th,
+        .data-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        .data-table th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+            color: #333;
+        }
+        .data-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        .data-table tr:hover {
+            background-color: #e3f2fd;
+        }
+        .item-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .item-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .item-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .item-card h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .item-card p {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        .item-card .price {
+            font-size: 18px;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .items-per-page {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .items-per-page select {
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .search-box {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 200px;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #007bff;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .stats {
+            display: flex;
+            gap: 20px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        .stat-item {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            text-align: center;
+            flex: 1;
+            min-width: 120px;
+        }
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+        }
+        .pagination-types {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .pagination-type {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .pagination-type h3 {
+            color: #333;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 8px;
+        }
+        .infinite-scroll {
+            height: 400px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 20px;
+        }
+        .load-more {
+            text-align: center;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Pagination Practice</h1>
+        
+        <div class="section">
+            <h2>Understanding Pagination</h2>
+            <p>Pagination is used to divide large sets of data into smaller, manageable chunks. This page demonstrates different pagination patterns commonly found in web applications.</p>
+            
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-number" id="total-items">0</div>
+                    <div class="stat-label">Total Items</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="current-page">1</div>
+                    <div class="stat-label">Current Page</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="total-pages">0</div>
+                    <div class="stat-label">Total Pages</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="items-per-page-count">10</div>
+                    <div class="stat-label">Items Per Page</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Standard Pagination with Table</h2>
+            <p>Traditional pagination with navigation controls and data table.</p>
+            
+            <div class="controls">
+                <div class="items-per-page">
+                    <label>Items per page:</label>
+                    <select id="items-per-page" onchange="changeItemsPerPage()">
+                        <option value="5">5</option>
+                        <option value="10" selected>10</option>
+                        <option value="20">20</option>
+                        <option value="50">50</option>
+                    </select>
+                </div>
+                <div>
+                    <input type="text" class="search-box" id="search-input" placeholder="Search items..." onkeyup="searchItems()">
+                </div>
+            </div>
+            
+            <table class="data-table" id="data-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Stock</th>
+                        <th>Rating</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body">
+                    <!-- Table rows will be populated by JavaScript -->
+                </tbody>
+            </table>
+            
+            <div class="pagination-info" id="pagination-info">
+                Showing 1-10 of 100 items
+            </div>
+            
+            <div class="pagination" id="pagination">
+                <!-- Pagination buttons will be populated by JavaScript -->
+            </div>
+            
+            <div style="margin: 20px 0;">
+                <button class="button" onclick="goToPage(1)">First Page</button>
+                <button class="button" onclick="goToPage(getCurrentPage() - 1)">Previous Page</button>
+                <button class="button" onclick="goToPage(getCurrentPage() + 1)">Next Page</button>
+                <button class="button" onclick="goToPage(getTotalPages())">Last Page</button>
+                <button class="button success" onclick="goToRandomPage()">Random Page</button>
+            </div>
+            
+            <div id="table-pagination-result" class="result"></div>
+        </div>
+
+        <div class="section">
+            <h2>Card Layout with Pagination</h2>
+            <p>Modern card-based layout with pagination controls.</p>
+            
+            <div class="controls">
+                <div class="items-per-page">
+                    <label>Items per page:</label>
+                    <select id="card-items-per-page" onchange="changeCardItemsPerPage()">
+                        <option value="6">6</option>
+                        <option value="9" selected>9</option>
+                        <option value="12">12</option>
+                        <option value="15">15</option>
+                    </select>
+                </div>
+                <div>
+                    <select id="category-filter" onchange="filterByCategory()">
+                        <option value="">All Categories</option>
+                        <option value="Electronics">Electronics</option>
+                        <option value="Clothing">Clothing</option>
+                        <option value="Books">Books</option>
+                        <option value="Home">Home</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="item-grid" id="item-grid">
+                <!-- Item cards will be populated by JavaScript -->
+            </div>
+            
+            <div class="pagination" id="card-pagination">
+                <!-- Card pagination buttons will be populated by JavaScript -->
+            </div>
+            
+            <div id="card-pagination-result" class="result"></div>
+        </div>
+
+        <div class="section">
+            <h2>Pagination Types</h2>
+            <div class="pagination-types">
+                <div class="pagination-type">
+                    <h3>Simple Pagination</h3>
+                    <div class="pagination" id="simple-pagination">
+                        <button onclick="simplePaginationAction('prev')">‹ Previous</button>
+                        <button class="active" onclick="simplePaginationAction('page', 1)">1</button>
+                        <button onclick="simplePaginationAction('page', 2)">2</button>
+                        <button onclick="simplePaginationAction('page', 3)">3</button>
+                        <button onclick="simplePaginationAction('next')">Next ›</button>
+                    </div>
+                    <p>Basic pagination with previous/next and page numbers.</p>
+                </div>
+                
+                <div class="pagination-type">
+                    <h3>Compact Pagination</h3>
+                    <div class="pagination" id="compact-pagination">
+                        <button onclick="compactPaginationAction('prev')">‹</button>
+                        <button class="active">1</button>
+                        <button onclick="compactPaginationAction('page', 2)">2</button>
+                        <span>...</span>
+                        <button onclick="compactPaginationAction('page', 10)">10</button>
+                        <button onclick="compactPaginationAction('next')">›</button>
+                    </div>
+                    <p>Compact pagination suitable for mobile devices.</p>
+                </div>
+                
+                <div class="pagination-type">
+                    <h3>Load More Button</h3>
+                    <div class="load-more">
+                        <button class="button success" onclick="loadMoreItems()">Load More Items</button>
+                        <p id="load-more-info">Showing 6 of 100 items</p>
+                    </div>
+                    <p>Infinite scroll style with load more button.</p>
+                </div>
+            </div>
+            
+            <div id="pagination-types-result" class="result"></div>
+        </div>
+
+        <div class="section">
+            <h2>Infinite Scroll</h2>
+            <p>Content that loads automatically as you scroll down.</p>
+            
+            <div class="infinite-scroll" id="infinite-scroll">
+                <div id="infinite-content">
+                    <!-- Content will be loaded dynamically -->
+                </div>
+                <div class="loading" id="infinite-loading" style="display: none;">
+                    <div class="spinner"></div>
+                    <p>Loading more items...</p>
+                </div>
+            </div>
+            
+            <div id="infinite-scroll-result" class="result"></div>
+        </div>
+
+        <div class="section">
+            <h2>Pagination Testing Scenarios</h2>
+            
+            <div style="margin: 20px 0;">
+                <button class="button" onclick="testNavigation()">Test Navigation</button>
+                <button class="button warning" onclick="testEdgeCases()">Test Edge Cases</button>
+                <button class="button success" onclick="testPerformance()">Test Performance</button>
+                <button class="button danger" onclick="testAccessibility()">Test Accessibility</button>
+            </div>
+            
+            <div style="margin: 20px 0;">
+                <button class="button" onclick="testLargeDataset()">Test Large Dataset</button>
+                <button class="button warning" onclick="testEmptyState()">Test Empty State</button>
+                <button class="button success" onclick="testFiltering()">Test Filtering</button>
+                <button class="button secondary" onclick="resetAllPagination()">Reset All</button>
+            </div>
+            
+            <div id="testing-result" class="result"></div>
+        </div>
+
+        <div class="section">
+            <h2>Pagination Examples</h2>
+            <div style="background-color: #f8f9fa; padding: 15px; border-radius: 4px; margin-bottom: 15px;">
+                <strong>Selenium Pagination Example:</strong><br>
+                // Navigate to specific page<br>
+                WebElement pageButton = driver.findElement(By.xpath("//button[text()='5']"));<br>
+                pageButton.click();<br><br>
+                // Click next page<br>
+                WebElement nextButton = driver.findElement(By.cssSelector(".pagination button:last-child"));<br>
+                nextButton.click();<br><br>
+                // Verify page content<br>
+                WebElement pageHeader = driver.findElement(By.cssSelector(".pagination-info"));<br>
+                assertTrue(pageHeader.getText().contains("Page 5"));
+            </div>
+            
+            <div style="background-color: #f8f9fa; padding: 15px; border-radius: 4px;">
+                <strong>Best Practices:</strong><br>
+                • Always wait for content to load after pagination<br>
+                • Verify that pagination controls are enabled/disabled correctly<br>
+                • Test edge cases (first page, last page, empty results)<br>
+                • Ensure URL updates when pagination changes (if applicable)<br>
+                • Test with different items per page settings
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample data
+        const sampleData = [];
+        const categories = ['Electronics', 'Clothing', 'Books', 'Home'];
+        const names = ['Laptop', 'T-Shirt', 'Novel', 'Chair', 'Phone', 'Jeans', 'Textbook', 'Table', 'Tablet', 'Dress', 'Magazine', 'Lamp', 'Headphones', 'Shoes', 'Comics', 'Sofa', 'Camera', 'Coat', 'Dictionary', 'Bed'];
+        
+        // Generate sample data
+        for (let i = 1; i <= 100; i++) {
+            sampleData.push({
+                id: i,
+                name: names[Math.floor(Math.random() * names.length)] + ' ' + i,
+                category: categories[Math.floor(Math.random() * categories.length)],
+                price: Math.floor(Math.random() * 1000) + 10,
+                stock: Math.floor(Math.random() * 100),
+                rating: (Math.random() * 2 + 3).toFixed(1)
+            });
+        }
+
+        // Pagination state
+        let currentPage = 1;
+        let itemsPerPage = 10;
+        let filteredData = [...sampleData];
+        let cardCurrentPage = 1;
+        let cardItemsPerPage = 9;
+        let cardFilteredData = [...sampleData];
+        let infinitePage = 1;
+        let infiniteItems = [];
+
+        // Initialize table pagination
+        function initializeTablePagination() {
+            updateTable();
+            updatePagination();
+            updateStats();
+        }
+
+        function updateTable() {
+            const tbody = document.getElementById('table-body');
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const pageData = filteredData.slice(startIndex, endIndex);
+
+            tbody.innerHTML = '';
+
+            pageData.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.id}</td>
+                    <td>${item.name}</td>
+                    <td>${item.category}</td>
+                    <td>$${item.price}</td>
+                    <td>${item.stock}</td>
+                    <td>${item.rating} ⭐</td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            updatePaginationInfo();
+        }
+
+        function updatePagination() {
+            const pagination = document.getElementById('pagination');
+            const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+            
+            pagination.innerHTML = '';
+
+            // Previous button
+            const prevBtn = document.createElement('button');
+            prevBtn.textContent = '‹ Previous';
+            prevBtn.disabled = currentPage === 1;
+            prevBtn.onclick = () => goToPage(currentPage - 1);
+            pagination.appendChild(prevBtn);
+
+            // Page numbers
+            const startPage = Math.max(1, currentPage - 2);
+            const endPage = Math.min(totalPages, currentPage + 2);
+
+            if (startPage > 1) {
+                const firstBtn = document.createElement('button');
+                firstBtn.textContent = '1';
+                firstBtn.onclick = () => goToPage(1);
+                pagination.appendChild(firstBtn);
+
+                if (startPage > 2) {
+                    const ellipsis = document.createElement('span');
+                    ellipsis.textContent = '...';
+                    ellipsis.style.padding = '0 5px';
+                    pagination.appendChild(ellipsis);
+                }
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                const pageBtn = document.createElement('button');
+                pageBtn.textContent = i;
+                pageBtn.className = i === currentPage ? 'active' : '';
+                pageBtn.onclick = () => goToPage(i);
+                pagination.appendChild(pageBtn);
+            }
+
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) {
+                    const ellipsis = document.createElement('span');
+                    ellipsis.textContent = '...';
+                    ellipsis.style.padding = '0 5px';
+                    pagination.appendChild(ellipsis);
+                }
+
+                const lastBtn = document.createElement('button');
+                lastBtn.textContent = totalPages;
+                lastBtn.onclick = () => goToPage(totalPages);
+                pagination.appendChild(lastBtn);
+            }
+
+            // Next button
+            const nextBtn = document.createElement('button');
+            nextBtn.textContent = 'Next ›';
+            nextBtn.disabled = currentPage === totalPages;
+            nextBtn.onclick = () => goToPage(currentPage + 1);
+            pagination.appendChild(nextBtn);
+        }
+
+        function updatePaginationInfo() {
+            const startIndex = (currentPage - 1) * itemsPerPage + 1;
+            const endIndex = Math.min(currentPage * itemsPerPage, filteredData.length);
+            const info = document.getElementById('pagination-info');
+            info.textContent = `Showing ${startIndex}-${endIndex} of ${filteredData.length} items`;
+        }
+
+        function updateStats() {
+            document.getElementById('total-items').textContent = filteredData.length;
+            document.getElementById('current-page').textContent = currentPage;
+            document.getElementById('total-pages').textContent = Math.ceil(filteredData.length / itemsPerPage);
+            document.getElementById('items-per-page-count').textContent = itemsPerPage;
+        }
+
+        function goToPage(page) {
+            const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+            if (page >= 1 && page <= totalPages) {
+                currentPage = page;
+                updateTable();
+                updatePagination();
+                updateStats();
+                logTablePagination(`Navigated to page ${page}`);
+            }
+        }
+
+        function getCurrentPage() {
+            return currentPage;
+        }
+
+        function getTotalPages() {
+            return Math.ceil(filteredData.length / itemsPerPage);
+        }
+
+        function goToRandomPage() {
+            const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+            const randomPage = Math.floor(Math.random() * totalPages) + 1;
+            goToPage(randomPage);
+        }
+
+        function changeItemsPerPage() {
+            itemsPerPage = parseInt(document.getElementById('items-per-page').value);
+            currentPage = 1;
+            updateTable();
+            updatePagination();
+            updateStats();
+            logTablePagination(`Changed items per page to ${itemsPerPage}`);
+        }
+
+        function searchItems() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            filteredData = sampleData.filter(item => 
+                item.name.toLowerCase().includes(searchTerm) ||
+                item.category.toLowerCase().includes(searchTerm)
+            );
+            currentPage = 1;
+            updateTable();
+            updatePagination();
+            updateStats();
+        }
+
+        // Card pagination functions
+        function initializeCardPagination() {
+            updateCards();
+            updateCardPagination();
+        }
+
+        function updateCards() {
+            const grid = document.getElementById('item-grid');
+            const startIndex = (cardCurrentPage - 1) * cardItemsPerPage;
+            const endIndex = startIndex + cardItemsPerPage;
+            const pageData = cardFilteredData.slice(startIndex, endIndex);
+
+            grid.innerHTML = '';
+
+            pageData.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'item-card';
+                card.innerHTML = `
+                    <h3>${item.name}</h3>
+                    <p><strong>Category:</strong> ${item.category}</p>
+                    <p><strong>Stock:</strong> ${item.stock} units</p>
+                    <p><strong>Rating:</strong> ${item.rating} ⭐</p>
+                    <div class="price">$${item.price}</div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function updateCardPagination() {
+            const pagination = document.getElementById('card-pagination');
+            const totalPages = Math.ceil(cardFilteredData.length / cardItemsPerPage);
+            
+            pagination.innerHTML = '';
+
+            // Previous button
+            const prevBtn = document.createElement('button');
+            prevBtn.textContent = '‹';
+            prevBtn.disabled = cardCurrentPage === 1;
+            prevBtn.onclick = () => goToCardPage(cardCurrentPage - 1);
+            pagination.appendChild(prevBtn);
+
+            // Page numbers
+            for (let i = 1; i <= totalPages; i++) {
+                if (i === 1 || i === totalPages || (i >= cardCurrentPage - 1 && i <= cardCurrentPage + 1)) {
+                    const pageBtn = document.createElement('button');
+                    pageBtn.textContent = i;
+                    pageBtn.className = i === cardCurrentPage ? 'active' : '';
+                    pageBtn.onclick = () => goToCardPage(i);
+                    pagination.appendChild(pageBtn);
+                } else if (i === cardCurrentPage - 2 || i === cardCurrentPage + 2) {
+                    const ellipsis = document.createElement('span');
+                    ellipsis.textContent = '...';
+                    ellipsis.style.padding = '0 5px';
+                    pagination.appendChild(ellipsis);
+                }
+            }
+
+            // Next button
+            const nextBtn = document.createElement('button');
+            nextBtn.textContent = '›';
+            nextBtn.disabled = cardCurrentPage === totalPages;
+            nextBtn.onclick = () => goToCardPage(cardCurrentPage + 1);
+            pagination.appendChild(nextBtn);
+        }
+
+        function goToCardPage(page) {
+            const totalPages = Math.ceil(cardFilteredData.length / cardItemsPerPage);
+            if (page >= 1 && page <= totalPages) {
+                cardCurrentPage = page;
+                updateCards();
+                updateCardPagination();
+                logCardPagination(`Navigated to card page ${page}`);
+            }
+        }
+
+        function changeCardItemsPerPage() {
+            cardItemsPerPage = parseInt(document.getElementById('card-items-per-page').value);
+            cardCurrentPage = 1;
+            updateCards();
+            updateCardPagination();
+            logCardPagination(`Changed card items per page to ${cardItemsPerPage}`);
+        }
+
+        function filterByCategory() {
+            const category = document.getElementById('category-filter').value;
+            cardFilteredData = category ? sampleData.filter(item => item.category === category) : [...sampleData];
+            cardCurrentPage = 1;
+            updateCards();
+            updateCardPagination();
+            logCardPagination(`Filtered by category: ${category || 'All'}`);
+        }
+
+        // Pagination type functions
+        function simplePaginationAction(action, page) {
+            const pagination = document.getElementById('simple-pagination');
+            const buttons = pagination.querySelectorAll('button');
+            
+            // Remove active class from all buttons
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            if (action === 'prev') {
+                logPaginationTypes('Simple pagination: Previous clicked');
+            } else if (action === 'next') {
+                logPaginationTypes('Simple pagination: Next clicked');
+            } else if (action === 'page') {
+                // Add active class to clicked page
+                buttons.forEach(btn => {
+                    if (btn.textContent === page.toString()) {
+                        btn.classList.add('active');
+                    }
+                });
+                logPaginationTypes(`Simple pagination: Page ${page} clicked`);
+            }
+        }
+
+        function compactPaginationAction(action, page) {
+            const pagination = document.getElementById('compact-pagination');
+            const buttons = pagination.querySelectorAll('button');
+            
+            // Remove active class from all buttons
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            if (action === 'prev') {
+                logPaginationTypes('Compact pagination: Previous clicked');
+            } else if (action === 'next') {
+                logPaginationTypes('Compact pagination: Next clicked');
+            } else if (action === 'page') {
+                // Add active class to clicked page
+                buttons.forEach(btn => {
+                    if (btn.textContent === page.toString()) {
+                        btn.classList.add('active');
+                    }
+                });
+                logPaginationTypes(`Compact pagination: Page ${page} clicked`);
+            }
+        }
+
+        let loadMoreCount = 6;
+        function loadMoreItems() {
+            loadMoreCount += 6;
+            const info = document.getElementById('load-more-info');
+            info.textContent = `Showing ${Math.min(loadMoreCount, 100)} of 100 items`;
+            
+            if (loadMoreCount >= 100) {
+                event.target.disabled = true;
+                event.target.textContent = 'All Items Loaded';
+            }
+            
+            logPaginationTypes(`Load more: ${loadMoreCount} items loaded`);
+        }
+
+        // Infinite scroll functions
+        function initializeInfiniteScroll() {
+            const scrollContainer = document.getElementById('infinite-scroll');
+            const content = document.getElementById('infinite-content');
+            
+            // Load initial content
+            loadInfiniteContent();
+            
+            // Add scroll event listener
+            scrollContainer.addEventListener('scroll', function() {
+                if (scrollContainer.scrollTop + scrollContainer.clientHeight >= scrollContainer.scrollHeight - 50) {
+                    loadInfiniteContent();
+                }
+            });
+        }
+
+        function loadInfiniteContent() {
+            const loading = document.getElementById('infinite-loading');
+            const content = document.getElementById('infinite-content');
+            
+            if (infinitePage > 10) {
+                loading.innerHTML = '<p>All content loaded</p>';
+                return;
+            }
+            
+            loading.style.display = 'block';
+            
+            setTimeout(() => {
+                const startIndex = (infinitePage - 1) * 10;
+                const endIndex = startIndex + 10;
+                const pageData = sampleData.slice(startIndex, endIndex);
+                
+                pageData.forEach(item => {
+                    const itemDiv = document.createElement('div');
+                    itemDiv.style.padding = '10px';
+                    itemDiv.style.borderBottom = '1px solid #eee';
+                    itemDiv.innerHTML = `
+                        <strong>${item.name}</strong> - ${item.category} - $${item.price}
+                    `;
+                    content.appendChild(itemDiv);
+                });
+                
+                infinitePage++;
+                loading.style.display = 'none';
+                
+                logInfiniteScroll(`Loaded infinite scroll page ${infinitePage - 1}`);
+            }, 1000);
+        }
+
+        // Testing functions
+        function testNavigation() {
+            logTesting('Testing pagination navigation...');
+            
+            // Test first page
+            goToPage(1);
+            
+            // Test last page
+            setTimeout(() => {
+                goToPage(getTotalPages());
+            }, 1000);
+            
+            // Test random pages
+            setTimeout(() => {
+                goToRandomPage();
+            }, 2000);
+            
+            setTimeout(() => {
+                logTesting('Pagination navigation test completed');
+            }, 3000);
+        }
+
+        function testEdgeCases() {
+            logTesting('Testing pagination edge cases...');
+            
+            // Test empty results
+            const originalData = [...filteredData];
+            filteredData = [];
+            updateTable();
+            updatePagination();
+            
+            setTimeout(() => {
+                // Test single page
+                filteredData = sampleData.slice(0, 3);
+                updateTable();
+                updatePagination();
+                
+                setTimeout(() => {
+                    // Test exact multiple
+                    filteredData = originalData.slice(0, 20);
+                    updateTable();
+                    updatePagination();
+                    
+                    logTesting('Edge cases test completed');
+                }, 1000);
+            }, 1000);
+        }
+
+        function testPerformance() {
+            logTesting('Testing pagination performance...');
+            
+            const startTime = performance.now();
+            
+            // Test with large dataset
+            for (let i = 0; i < 100; i++) {
+                goToPage(Math.floor(Math.random() * getTotalPages()) + 1);
+            }
+            
+            const endTime = performance.now();
+            logTesting(`Performance test completed in ${(endTime - startTime).toFixed(2)}ms`);
+        }
+
+        function testAccessibility() {
+            logTesting('Testing pagination accessibility...');
+            
+            const pagination = document.getElementById('pagination');
+            const buttons = pagination.querySelectorAll('button');
+            
+            buttons.forEach(button => {
+                // Test ARIA attributes
+                if (!button.getAttribute('aria-label')) {
+                    logTesting(`Warning: Button missing aria-label: ${button.textContent}`);
+                }
+                
+                // Test keyboard navigation
+                button.setAttribute('tabindex', '0');
+            });
+            
+            logTesting('Accessibility test completed');
+        }
+
+        function testLargeDataset() {
+            logTesting('Testing with large dataset...');
+            
+            // Create large dataset
+            const largeData = [];
+            for (let i = 1; i <= 1000; i++) {
+                largeData.push({
+                    id: i,
+                    name: `Item ${i}`,
+                    category: categories[Math.floor(Math.random() * categories.length)],
+                    price: Math.floor(Math.random() * 1000) + 10,
+                    stock: Math.floor(Math.random() * 100),
+                    rating: (Math.random() * 2 + 3).toFixed(1)
+                });
+            }
+            
+            filteredData = largeData;
+            updateTable();
+            updatePagination();
+            updateStats();
+            
+            logTesting('Large dataset test completed');
+        }
+
+        function testEmptyState() {
+            logTesting('Testing empty state...');
+            
+            filteredData = [];
+            updateTable();
+            updatePagination();
+            updateStats();
+            
+            logTesting('Empty state test completed');
+        }
+
+        function testFiltering() {
+            logTesting('Testing filtering with pagination...');
+            
+            // Test different filters
+            const filters = ['', 'Electronics', 'Clothing', 'Books', 'Home'];
+            let filterIndex = 0;
+            
+            const filterInterval = setInterval(() => {
+                if (filterIndex < filters.length) {
+                    document.getElementById('category-filter').value = filters[filterIndex];
+                    filterByCategory();
+                    filterIndex++;
+                } else {
+                    clearInterval(filterInterval);
+                    logTesting('Filtering test completed');
+                }
+            }, 1500);
+        }
+
+        function resetAllPagination() {
+            // Reset table pagination
+            currentPage = 1;
+            itemsPerPage = 10;
+            filteredData = [...sampleData];
+            document.getElementById('items-per-page').value = '10';
+            document.getElementById('search-input').value = '';
+            updateTable();
+            updatePagination();
+            updateStats();
+            
+            // Reset card pagination
+            cardCurrentPage = 1;
+            cardItemsPerPage = 9;
+            cardFilteredData = [...sampleData];
+            document.getElementById('card-items-per-page').value = '9';
+            document.getElementById('category-filter').value = '';
+            updateCards();
+            updateCardPagination();
+            
+            // Reset infinite scroll
+            infinitePage = 1;
+            infiniteItems = [];
+            document.getElementById('infinite-content').innerHTML = '';
+            document.getElementById('infinite-loading').style.display = 'none';
+            loadInfiniteContent();
+            
+            // Reset load more
+            loadMoreCount = 6;
+            const loadMoreBtn = document.querySelector('.load-more button');
+            loadMoreBtn.disabled = false;
+            loadMoreBtn.textContent = 'Load More Items';
+            document.getElementById('load-more-info').textContent = 'Showing 6 of 100 items';
+            
+            logTesting('All pagination reset');
+        }
+
+        // Logging functions
+        function logTablePagination(message) {
+            const result = document.getElementById('table-pagination-result');
+            result.textContent += `[${new Date().toLocaleTimeString()}] ${message}\n`;
+        }
+
+        function logCardPagination(message) {
+            const result = document.getElementById('card-pagination-result');
+            result.textContent += `[${new Date().toLocaleTimeString()}] ${message}\n`;
+        }
+
+        function logPaginationTypes(message) {
+            const result = document.getElementById('pagination-types-result');
+            result.textContent += `[${new Date().toLocaleTimeString()}] ${message}\n`;
+        }
+
+        function logInfiniteScroll(message) {
+            const result = document.getElementById('infinite-scroll-result');
+            result.textContent += `[${new Date().toLocaleTimeString()}] ${message}\n`;
+        }
+
+        function logTesting(message) {
+            const result = document.getElementById('testing-result');
+            result.textContent += `[${new Date().toLocaleTimeString()}] ${message}\n`;
+        }
+
+        // Initialize everything when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeTablePagination();
+            initializeCardPagination();
+            initializeInfiniteScroll();
+        });
+    </script>
+</body>
+</html>

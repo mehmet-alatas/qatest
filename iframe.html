@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iFrames - Selenium Training</title>
+    <style>
+        /* Global styles - Lighter theme */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #e0e0e0, #f8f8f8, #e0e0e0); /* Lighter gradient */
+            color: #333; /* Darker text for light background */
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95); /* Slightly transparent white */
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); /* Softer shadow */
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(90deg, #1a2a6c, #b21f1f); /* Original header gradient */
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            background: linear-gradient(45deg, #1a2a6c, #b21f1f, #1a2a6c);
+            z-index: -1;
+            filter: blur(20px);
+            opacity: 0.7;
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .content {
+            padding: 30px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
+        
+        .section {
+            background: white; /* Original section background */
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .section-header {
+            background: linear-gradient(90deg, #1a2a6c, #b21f1f); /* Original header gradient */
+            color: white;
+            padding: 15px 20px;
+            font-size: 1.4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .section-content {
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        @media (max-width: 900px) {
+            .section-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .practice-area, .code-area {
+            padding: 20px;
+            border-radius: 8px;
+        }
+        
+        .practice-area {
+            background: #f8f9fa; /* Original practice area background */
+            border: 1px solid #e9ecef;
+        }
+        
+        /* Specific dark theme for the result box within 'Understanding iFrames' */
+        #methods-result.result {
+            background: #282a36; /* Dracula theme background */
+            color: #f8f8f2; /* Light text */
+            border-left: 4px solid #50fa7b; /* Green highlight */
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .code-area {
+            background: #1e1e1e; /* Code editor background - kept dark */
+            color: #f8f8f2;
+            overflow-x: auto;
+        }
+        
+        .iframe-container {
+            border: 2px solid #1a2a6c; /* Original border color */
+            border-radius: 8px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+        
+        .iframe-header {
+            background: #1a2a6c; /* Original iframe header background */
+            color: white;
+            padding: 10px 15px;
+            font-weight: bold;
+        }
+        
+        iframe {
+            width: 100%;
+            height: 250px;
+            border: none;
+            background: white; /* Light background for iframe content */
+        }
+        
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .button {
+            padding: 12px 24px;
+            background: #1a2a6c; /* Original button color */
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .button:hover {
+            background: #0d1a4a; /* Original hover color */
+            transform: translateY(-2px);
+        }
+        
+        .button.success {
+            background: #28a745;
+        }
+        
+        .button.success:hover {
+            background: #218838;
+        }
+        
+        .button.warning {
+            background: #ffc107;
+            color: #333;
+        }
+        
+        .button.warning:hover {
+            background: #e0a800;
+        }
+        
+        .button.danger {
+            background: #dc3545;
+        }
+        
+        .button.danger:hover {
+            background: #c82333;
+        }
+        
+        .button.info {
+            background: #17a2b8;
+        }
+        
+        .button.info:hover {
+            background: #138496;
+        }
+        
+        /* Original .result styling for other result boxes */
+        .result:not(#methods-result) {
+            margin-top: 15px;
+            padding: 15px;
+            background: #e9ecef;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+            border-left: 4px solid #1a2a6c;
+        }
+        
+        .test-case {
+            margin-top: 20px;
+            padding: 15px;
+            background: #fff; /* Original test case background */
+            border-radius: 4px;
+            border-left: 4px solid #1a2a6c; /* Original border */
+        }
+        
+        .test-case h4 {
+            color: #1a2a6c; /* Original heading color */
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .test-case p {
+            margin: 5px 0;
+        }
+        
+        .test-case ol {
+            margin: 10px 0 10px 20px;
+        }
+        
+        .test-case li {
+            margin-bottom: 5px;
+        }
+        
+        /* Code syntax highlighting for dark theme (these colors are for dark backgrounds) */
+        .keyword { color: #50fa7b; } /* Green */
+        .string { color: #f1fa8c; }  /* Yellow */
+        .comment { color: #6272a4; } /* Grey-blue */
+        .annotation { color: #ff79c6; } /* Pink */
+        .method { color: #8be9fd; }  /* Cyan */
+        
+        .badge {
+            background: #b21f1f;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: #1a2a6c; /* Original footer background */
+            color: white;
+            font-size: 0.9rem;
+        }
+        
+        footer a {
+            color: #ffc107; /* Original link color */
+            text-decoration: none;
+        }
+        
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>iFrame Practice with Selenium</h1>
+            <p class="subtitle">Master iframe handling techniques with these interactive examples and Selenium test scenarios</p>
+        </header>
+        
+        <div class="content">
+            <div class="section">
+                <div class="section-header">
+                    <h2>Understanding iFrames</h2>
+                    <span class="badge">Fundamental</span>
+                </div>
+                <div class="section-content">
+                    <div class="practice-area">
+                        <p>iFrames (Inline Frames) are HTML documents embedded inside another HTML document. They require special handling in test automation.</p>
+                        
+                        <div class="alert-info">
+                            <strong>Key Concepts:</strong>
+                            <ul style="margin: 10px 0 10px 20px;">
+                                <li>iFrames create separate browsing contexts</li>
+                                <li>Selenium requires explicit context switching</li>
+                                <li>Nested iframes require multiple context switches</li>
+                                <li>Dynamic iframes need special waiting strategies</li>
+                            </ul>
+                        </div>
+                        
+                        <!-- Selenium methods are now always visible and styled as a code block -->
+                        <div id="methods-result" class="result" style="display: block;">
+                            // Switch to iframe by ID
+                            driver.switchTo().frame("frame-id");
+                            
+                            // Switch to iframe by index
+                            driver.switchTo().frame(0);
+                            
+                            // Switch to iframe by WebElement
+                            WebElement frame = driver.findElement(By.id("frame-id"));
+                            driver.switchTo().frame(frame);
+                            
+                            // Switch back to main content
+                            driver.switchTo().defaultContent();
+                            
+                            // Switch to parent frame
+                            driver.switchTo().parentFrame();
+                        </div>
+                    </div>
+                    <div class="code-area">
+                        <h3>Selenium Best Practices</h3>
+                        <pre><code><span class="comment">// Always wait for iframe to be available</span>
+WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+WebElement frame = wait.until(ExpectedConditions
+    .presenceOfElementLocated(By.id("frame-id")));
+driver.switchTo().frame(frame);
+
+<span class="comment">// Perform actions inside iframe</span>
+WebElement button = driver.findElement(By.id("frame-button"));
+button.click();
+
+<span class="comment">// Switch back to default content when done</span>
+driver.switchTo().defaultContent();
+
+<span class="comment">// For nested frames, switch to parent frame</span>
+driver.switchTo().parentFrame();
+
+<span class="comment">// Handle dynamic iframes with explicit waits</span>
+wait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(
+    By.xpath("//iframe[contains(@src,'dynamic')]")));
+</code></pre>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <div class="section-header">
+                    <h2>Simple iFrame</h2>
+                    <span class="badge">Basic</span>
+                </div>
+                <div class="section-content">
+                    <div class="practice-area">
+                        <p>This section contains a basic iframe for practicing frame switching and interaction.</p>
+                        
+                        <div class="iframe-container">
+                            <div class="iframe-header">
+                                <span>Simple Frame</span>
+                                <span>ID: simple-frame</span>
+                            </div>
+                            <iframe id="simple-frame" srcdoc="
+                                <html>
+                                <head>
+                                    <style>
+                                        body { font-family: Arial, sans-serif; padding: 20px; background-color: #f8f9fa; }
+                                        .frame-content { background-color: white; padding: 20px; border-radius: 8px; }
+                                        .frame-button { padding: 8px 16px; margin: 5px; background-color: #1a2a6c; color: white; border: none; border-radius: 4px; cursor: pointer; }
+                                        .frame-button:hover { background-color: #0d1a4a; }
+                                        .frame-input { padding: 8px; margin: 5px; border: 1px solid #ddd; border-radius: 4px; width: 200px; }
+                                        .frame-result { margin-top: 10px; padding: 10px; background-color: #e9ecef; border-radius: 4px; font-family: monospace; }
+                                    </style>
+                                </head>
+                                <body>
+                                    <div class='frame-content'>
+                                        <h3>Inside Simple Frame</h3>
+                                        <input type='text' class='frame-input' id='frame-input' placeholder='Enter text here...'>
+                                        <br>
+                                        <button class='frame-button' id='frame-button' onclick='handleFrameClick()'>Click Me</button>
+                                        <button class='frame-button' onclick='clearFrameInput()'>Clear</button>
+                                        <div class='frame-result' id='frame-result'>Ready for interaction...</div>
+                                    </div>
+                                    <script>
+                                        function handleFrameClick() {
+                                            const input = document.getElementById('frame-input');
+                                            const result = document.getElementById('frame-result');
+                                            result.textContent = input.value ? 'You entered: ' + input.value : 'Please enter some text first';
+                                        }
+                                        function clearFrameInput() {
+                                            document.getElementById('frame-input').value = '';
+                                            document.getElementById('frame-result').textContent = 'Input cleared';
+                                        }
+                                    </script>
+                                </body>
+                                </html>
+                            "></iframe>
+                        </div>
+                        
+                        <div class="button-group">
+                            <button class="button" onclick="switchToSimpleFrame()">Switch to Frame</button>
+                            <button class="button success" onclick="interactWithFrame()">Interact with Frame</button>
+                            <button class="button warning" onclick="switchToParent()">Switch to Default</button>
+                        </div>
+                        
+                        <div id="simple-frame-result" class="result">Current Frame Context: default</div>
+
+                        <div class="test-case">
+                            <h4>Test Case: Simple iFrame Interaction</h4>
+                            <p><strong>Test ID:</strong> TC_IFRAME_001</p>
+                            <p><strong>Objective:</strong> Verify ability to switch to iframe, interact with elements, and switch back</p>
+                            <ol>
+                                <li>Navigate to the page containing iframe with ID "simple-frame"</li>
+                                <li>Switch to iframe using frame ID</li>
+                                <li>Locate input field with ID "frame-input" inside iframe</li>
+                                <li>Enter text "Hello from Selenium" in the input field</li>
+                                <li>Click button with ID "frame-button" inside iframe</li>
+                                <li>Verify result text contains "You entered: Hello from Selenium"</li>
+                                <li>Switch back to default content (main page)</li>
+                                <li>Verify we're back on main page by finding main page element</li>
+                            </ol>
+                        </div>
+                    </div>
+                    <div class="code-area">
+                        <h3>Selenium Test Code - Simple iFrame</h3>
+                        <pre><code><span class="annotation">@Test</span>
+<span class="keyword">public void</span> <span class="method">simpleIFrameTest</span>() <span class="keyword">throws</span> InterruptedException {
+    <span class="comment">// Locate the iframe element</span>
+    WebElement iframe = driver.<span class="method">findElement</span>(By.<span class="method">id</span>(<span class="string">"simple-frame"</span>));
+    
+    <span class="comment">// Switch to iframe by ID</span>
+    driver.<span class="method">switchTo</span>().<span class="method">frame</span>(<span class="string">"simple-frame"</span>);
+    
+    <span class="comment">// Verify we're inside the iframe by finding frame-specific element</span>
+    WebElement frameInput = driver.<span class="method">findElement</span>(By.<span class="method">id</span>(<span class="string">"frame-input"</span>));
+    WebElement frameButton = driver.<span class="method">findElement</span>(By.<span class="method">id</span>(<span class="string">"frame-button"</span>));
+    WebElement frameResult = driver.<span class="method">findElement</span>(By.<span class="method">id</span>(<span class="string">"frame-result"</span>));
+    
+    <span class="comment">// Interact with elements inside the iframe</span>
+    frameInput.<span class="method">clear</span>();
+    frameInput.<span class="method">sendKeys</span>(<span class="string">"Hello from Selenium"</span>);
+    
+    frameButton.<span class="method">click</span>();
+    
+    <span class="comment">// Wait for result and verify</span>
+    Thread.<span class="method">sleep</span>(<span class="string">1000</span>);
+    String resultText = frameResult.<span class="method">getText</span>();
+    Assertions.<span class="method">assertTrue</span>(resultText.<span class="method">contains</span>(<span class="string">"You entered: Hello from Selenium"</span>));
+    
+    <span class="comment">// Switch back to default content (main page)</span>
+    driver.<span class="method">switchTo</span>().<span class="method">defaultContent</span>();
+    
+    <span class="comment">// Verify we're back on main page</span>
+    WebElement mainPageTitle = driver.<span class="method">findElement</span>(By.<span class="method">tagName</span>(<span class="string">"h1"</span>));
+    Assertions.<span class="method">assertTrue</span>(mainPageTitle.<span class="method">getText</span>().<span class="method">contains</span>(<span class="string">"iFrames Practice"</span>));
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- REMOVED NESTED IFRAMES SECTION AS PER USER REQUEST -->
+            
+        </div>
+        
+        <footer>
+            <p>&copy; 2025 iFrames Selenium Training. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Global variable to simulate Selenium's current frame context
+        let currentFrameContext = 'default';
+
+        /**
+         * Helper function to update the result display with a message.
+         * @param {string} elementId - The ID of the HTML element to update.
+         * @param {string} message - The message to display.
+         */
+        function updateResult(elementId, message) {
+            const resultElement = document.getElementById(elementId);
+            if (resultElement) {
+                resultElement.textContent = `Current Frame Context: ${currentFrameContext}\n${message}`;
+            }
+        }
+
+        // --- Understanding iFrames Section Functions ---
+        // showSeleniumMethods() function is removed as content is displayed by default.
+
+        // --- Simple iFrame Section Functions ---
+        /**
+         * Simulates switching Selenium's focus to the 'simple-frame'.
+         */
+        function switchToSimpleFrame() {
+            currentFrameContext = 'simple-frame';
+            updateResult('simple-frame-result', 'Simulating: Selenium switched to iframe with ID "simple-frame".');
+        }
+
+        /**
+         * Simulates interaction with elements inside the 'simple-frame'.
+         */
+        function interactWithFrame() {
+            if (currentFrameContext !== 'simple-frame') {
+                updateResult('simple-frame-result', 'ERROR: Selenium is not currently in "simple-frame". Please switch to it first!');
+                return;
+            }
+
+            try {
+                const iframe = document.getElementById('simple-frame');
+                // Check if iframe content is accessible (same-origin policy might prevent this in real browsers for external iframes)
+                if (!iframe || !iframe.contentWindow || !iframe.contentWindow.document) {
+                    throw new Error('Iframe content not accessible. It might not be loaded or cross-origin policy applies.');
+                }
+                const iframeDoc = iframe.contentWindow.document;
+
+                const input = iframeDoc.getElementById('frame-input');
+                const button = iframeDoc.getElementById('frame-button');
+                const resultDiv = iframeDoc.getElementById('frame-result');
+
+                const textToEnter = "Hello from Interactive Page";
+                input.value = textToEnter;
+                button.click(); // Trigger the iframe's internal JavaScript
+
+                // Get the updated text from within the iframe
+                const iframeResultText = resultDiv.textContent;
+
+                updateResult('simple-frame-result', 
+                    `Simulating: Interacted with "simple-frame".\n` +
+                    `Entered "${textToEnter}" into input.\n` +
+                    `Clicked button. Internal iframe result: "${iframeResultText}"`);
+            } catch (error) {
+                updateResult('simple-frame-result', `ERROR during interaction: ${error.message}. Ensure frame is ready.`);
+            }
+        }
+
+        /**
+         * Simulates switching Selenium's focus back to the default content (main page).
+         * For the simple frame, this is equivalent to defaultContent().
+         */
+        function switchToParent() {
+            currentFrameContext = 'default';
+            updateResult('simple-frame-result', 'Simulating: Selenium switched back to default content (main page).');
+        }
+
+        // Initialize display for result areas
+        window.onload = function() {
+            updateResult('simple-frame-result', 'Page loaded. Current Frame Context: default');
+            // The nested-frame-result element is no longer on the page.
+        };
+
+    </script>
+</body>
+</html>

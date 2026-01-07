@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Operations - Selenium Training</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .section {
+            margin-bottom: 40px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .section h2 {
+            color: #555;
+            margin-bottom: 15px;
+        }
+        .button {
+            padding: 12px 24px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 15px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+        .button.success {
+            background-color: #28a745;
+        }
+        .button.success:hover {
+            background-color: #218838;
+        }
+        .button.warning {
+            background-color: #ffc107;
+            color: #333;
+        }
+        .button.warning:hover {
+            background-color: #e0a800;
+        }
+        .button.danger {
+            background-color: #dc3545;
+        }
+        .button.danger:hover {
+            background-color: #c82333;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .file-upload-area {
+            border: 2px dashed #007bff;
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            background-color: #f8f9fa;
+            margin: 20px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .file-upload-area:hover {
+            background-color: #e3f2fd;
+            border-color: #0056b3;
+        }
+        .file-upload-area.dragover {
+            background-color: #e3f2fd;
+            border-color: #0056b3;
+        }
+        .file-input {
+            display: none;
+        }
+        .upload-icon {
+            font-size: 48px;
+            color: #007bff;
+            margin-bottom: 15px;
+        }
+        .file-list {
+            margin-top: 20px;
+        }
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            background-color: #f8f9fa;
+        }
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .file-icon {
+            font-size: 24px;
+            color: #007bff;
+        }
+        .file-details {
+            flex: 1;
+        }
+        .file-name {
+            font-weight: bold;
+            color: #333;
+        }
+        .file-size {
+            font-size: 12px;
+            color: #666;
+        }
+        .file-actions {
+            display: flex;
+            gap: 10px;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background-color: #007bff;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        .download-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .download-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        .download-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .download-icon {
+            font-size: 48px;
+            color: #28a745;
+            margin-bottom: 15px;
+        }
+        .download-title {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .download-description {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+        .file-info-box {
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        .file-info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        .file-info-label {
+            font-weight: bold;
+            color: #333;
+        }
+        .file-info-value {
+            color: #666;
+        }
+        .upload-stats {
+            display: flex;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .stat-item {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            text-align: center;
+            flex: 1;
+        }
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+        }
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 4px;
+            color: white;
+            font-weight: bold;
+            z-index: 1000;
+            display: none;
+            animation: slideIn 0.3s ease-out;
+        }
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        .notification.success {
+            background-color: #28a745;
+        }
+        .notification.error {
+            background-color: #dc3545;
+        }
+        .notification.warning {
+            background-color: #ffc107;
+            color: #333;
+        }
+        .notification.info {
+            background-color: #17a2b8;
+        }
+        .drag-drop-area {
+            border: 2px dashed #28a745;
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            background-color: #f8fff8;
+            margin: 20px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .drag-drop-area:hover {
+            background-color: #e8f5e8;
+            border-color: #218838;
+        }
+        .drag-drop-area.dragover {
+            background-color: #e8f5e8;
+            border-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>File Operations Practice</h1>
+        
+        <div class="section">
+            <h2>File Upload</h2>
+            <p>Practice uploading files using different methods.</p>
+            
+            <div class="file-upload-area" onclick="document.getElementById('file-input').click()">
+                <div class="upload-icon">📁</div>
+                <h3>Click to Upload Files</h3>
+                <p>or drag and drop files here</p>
+                <input type="file" id="file-input" class="file-input" multiple onchange="handleFileSelect(event)">
+            </div>
+            
+            <div class="upload-stats">
+                <div class="stat-item">
+                    <div class="stat-number" id="total-files">0</div>
+                    <div class="stat-label">Total Files</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="total-size">0 KB</div>
+                    <div class="stat-label">Total Size</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="upload-progress">0%</div>
+                    <div class="stat-label">Upload Progress</div>
+                </div>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" id="upload-progress-bar"></div>
+            </div>
+            
+            <div class="file-list" id="file-list"></div>
+            
+            <div style="margin: 20px 0;">
+                <button class="button success" onclick="simulateUpload()">Simulate Upload</button>
+                <button class="button warning" onclick="clearFileList()">Clear Files</button>
+                <button class="button danger" onclick="cancelUpload()">Cancel Upload</button>
+            </div>
+            
+            <div id="upload-result" class="result"></div>
+        </div>
+
+        <div class="section">
+            <h2>Drag & Drop Upload</h2>
+            <p>Practice drag and drop file upload functionality.</p>
+            
+            <div class="drag-drop-area" id="drag-drop-area">
+                <div class="upload-icon">🎯</div>
+                <h3>Drag & Drop Files Here</h3>
+                <p>Supports multiple file upload</p>
+                <input type="file" id="drag-drop-input" class="file-input" multiple onchange="handleDragDropSelect(event)">
+            </div>
+            
+            <div id="drag-drop-result" class="result"></div>
+        </div>
+
+        <div class="section">
+            <h2>File Download</h2>
+            <p>Practice downloading different types of files.</p>
+            
+            <div class="download-grid">
+                <div class="download-card">
+                    <div class="download-icon">📄</div>
+                    <div class="download-title">Text Document</div>
+                    <div class="download-description">Sample text file for testing</div>
+                    <button class="button" onclick="downloadFile('text')">Download TXT</button>
+                </div>
+                
+                <div class="download-card">
+                    <div class="download-icon">📊</div>
+                    <div class="download-title">CSV File</div>
+                    <div class="download-description">Comma-separated values file</div>
+                    <button class="button" onclick="downloadFile('csv')">Download CSV</button>
+                </div>
+                
+                <div class="download-card">
+                    <div class="download-icon">📋</div>
+                    <div class="download-title">JSON File</div>
+                    <div class="download-description">JSON data file</div>
+                    <button class="button" onclick="downloadFile('json')">Download JSON</button>
+                </div>
+                
+                <div class="download-card">
+                    <div class="download-icon">🖼️</div>
+                    <div class="download-title">Image File</div>
+                    <div class="download-description">Sample image file</div>
+                    <button class="button" onclick="downloadFile('image')">Download Image</button>
+                </div>
+                
+                <div class="download-card">
+                    <div class="download-icon">📦</div>
+                    <div class="download-title">ZIP Archive</div>
+                    <div class="download-description">Compressed archive file</div>
+                    <button class="button" onclick="downloadFile('zip')">Download ZIP</button>
+                </div>
+                
+                <div class="download-card">
+                    <div class="download-icon">📝</div>
+                    <div class="download-title">PDF Document</div>
+                    <div class="download-description">Portable Document Format</div>
+                    <button class="button" onclick="downloadFile('pdf')">Download PDF</button>
+                </div>
+            </div>
+            
+            <div id="download-result" class="result"></div>
+        </div>
+
+        <div class="section">
+            <h2>File Information Display</h2>
+            <p>View detailed information about uploaded files.</p>
+            
+            <div id="file-info-container"></div>
+            
+            <button class="button" onclick="generateSampleFileInfo()">Generate Sample File Info</button>
+            <button class="button warning" onclick="clearFileInfo()">Clear File Info</button>
+            
+            <div id="file-info-result" class="result"></div>
+        </div>
+
+        <div class="section">
+            <h2>Batch File Operations</h2>
+            <p>Practice handling multiple file operations simultaneously.</p>
+            
+            <div style="margin: 20px 0;">
+                <button class="button success" onclick="batchDownload()">Batch Download</button>
+                <button class="button warning" onclick="batchUpload()">Batch Upload Simulation</button>
+                <button class="button danger" onclick="batchDelete()">Batch Delete</button>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" id="batch-progress-bar"></div>
+            </div>
+            
+            <div id="batch-result" class="result"></div>
+        </div>
+
+        <div class="section">
+            <h2>File Operations Examples</h2>
+            <div class="file-info-box">
+                <div class="file-info-row">
+                    <span class="file-info-label">File Upload Example:</span>
+                    <span class="file-info-value">WebElement fileInput = driver.findElement(By.id("file-input"));</span>
+                </div>
+                <div class="file-info-row">
+                    <span class="file-info-label"></span>
+                    <span class="file-info-value">fileInput.sendKeys("C:\\path\\to\\file.txt");</span>
+                </div>
+            </div>
+            
+            <div class="file-info-box">
+                <div class="file-info-row">
+                    <span class="file-info-label">File Download Example:</span>
+                    <span class="file-info-value">WebElement downloadLink = driver.findElement(By.linkText("Download TXT"));</span>
+                </div>
+                <div class="file-info-row">
+                    <span class="file-info-label"></span>
+                    <span class="file-info-value">downloadLink.click();</span>
+                </div>
+            </div>
+            
+            <div class="file-info-box">
+                <div class="file-info-row">
+                    <span class="file-info-label">Handling Downloads:</span>
+                    <span class="file-info-value">Set download directory in browser options</span>
+                </div>
+                <div class="file-info-row">
+                    <span class="file-info-label"></span>
+                    <span class="file-info-value">Wait for download completion</span>
+                </div>
+                <div class="file-info-row">
+                    <span class="file-info-label"></span>
+                    <span class="file-info-value">Verify downloaded file exists</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script>
+        let uploadedFiles = [];
+        let uploadProgress = 0;
+        let uploadInterval;
+
+        // File Upload Functions
+        function handleFileSelect(event) {
+            const files = Array.from(event.target.files);
+            addFiles(files);
+        }
+
+        function handleDragDropSelect(event) {
+            const files = Array.from(event.target.files);
+            addFiles(files);
+        }
+
+        function addFiles(files) {
+            files.forEach(file => {
+                uploadedFiles.push({
+                    name: file.name,
+                    size: file.size,
+                    type: file.type,
+                    lastModified: file.lastModified
+                });
+            });
+            
+            updateFileList();
+            updateStats();
+            showNotification(`${files.length} file(s) added`, 'success');
+        }
+
+        function updateFileList() {
+            const fileList = document.getElementById('file-list');
+            fileList.innerHTML = '';
+            
+            uploadedFiles.forEach((file, index) => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                fileItem.innerHTML = `
+                    <div class="file-info">
+                        <div class="file-icon">📄</div>
+                        <div class="file-details">
+                            <div class="file-name">${file.name}</div>
+                            <div class="file-size">${formatFileSize(file.size)}</div>
+                        </div>
+                    </div>
+                    <div class="file-actions">
+                        <button class="button" onclick="viewFileInfo(${index})">View Info</button>
+                        <button class="button danger" onclick="removeFile(${index})">Remove</button>
+                    </div>
+                `;
+                fileList.appendChild(fileItem);
+            });
+        }
+
+        function updateStats() {
+            const totalFiles = uploadedFiles.length;
+            const totalSize = uploadedFiles.reduce((sum, file) => sum + file.size, 0);
+            
+            document.getElementById('total-files').textContent = totalFiles;
+            document.getElementById('total-size').textContent = formatFileSize(totalSize);
+            document.getElementById('upload-progress').textContent = uploadProgress + '%';
+            document.getElementById('upload-progress-bar').style.width = uploadProgress + '%';
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function simulateUpload() {
+            if (uploadedFiles.length === 0) {
+                showNotification('Please select files first', 'warning');
+                return;
+            }
+            
+            uploadProgress = 0;
+            uploadInterval = setInterval(() => {
+                uploadProgress += Math.random() * 10;
+                if (uploadProgress >= 100) {
+                    uploadProgress = 100;
+                    clearInterval(uploadInterval);
+                    showNotification('Upload completed successfully!', 'success');
+                    logUpload('All files uploaded successfully');
+                }
+                updateStats();
+            }, 200);
+        }
+
+        function clearFileList() {
+            uploadedFiles = [];
+            uploadProgress = 0;
+            clearInterval(uploadInterval);
+            updateFileList();
+            updateStats();
+            showNotification('File list cleared', 'info');
+            logUpload('File list cleared');
+        }
+
+        function cancelUpload() {
+            clearInterval(uploadInterval);
+            uploadProgress = 0;
+            updateStats();
+            showNotification('Upload cancelled', 'warning');
+            logUpload('Upload cancelled');
+        }
+
+        function removeFile(index) {
+            uploadedFiles.splice(index, 1);
+            updateFileList();
+            updateStats();
+            showNotification('File removed', 'info');
+        }
+
+        function viewFileInfo(index) {
+            const file = uploadedFiles[index];
+            const fileInfo = `
+File Name: ${file.name}
+File Size: ${formatFileSize(file.size)}
+File Type: ${file.type || 'Unknown'}
+Last Modified: ${new Date(file.lastModified).toLocaleString()}
+            `;
+            alert(fileInfo);
+        }
+
+        // Drag and Drop Functions
+        function setupDragAndDrop() {
+            const dragDropArea = document.getElementById('drag-drop-area');
+            
+            dragDropArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dragDropArea.classList.add('dragover');
+            });
+            
+            dragDropArea.addEventListener('dragleave', () => {
+                dragDropArea.classList.remove('dragover');
+            });
+            
+            dragDropArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dragDropArea.classList.remove('dragover');
+                
+                const files = Array.from(e.dataTransfer.files);
+                addFiles(files);
+                logDragDrop(`${files.length} file(s) dropped`);
+            });
+        }
+
+        // Download Functions
+        function downloadFile(type) {
+            let content, filename, mimeType;
+            
+            switch(type) {
+                case 'text':
+                    content = 'This is a sample text file for testing purposes.\n\nCreated: ' + new Date().toLocaleString();
+                    filename = 'sample.txt';
+                    mimeType = 'text/plain';
+                    break;
+                case 'csv':
+                    content = 'Name,Age,City\nJohn,25,New York\nJane,30,Los Angeles\nBob,35,Chicago';
+                    filename = 'sample.csv';
+                    mimeType = 'text/csv';
+                    break;
+                case 'json':
+                    content = JSON.stringify({
+                        name: 'Sample Data',
+                        created: new Date().toISOString(),
+                        items: ['item1', 'item2', 'item3'],
+                        count: 3
+                    }, null, 2);
+                    filename = 'sample.json';
+                    mimeType = 'application/json';
+                    break;
+                case 'image':
+                    // Create a simple SVG image
+                    content = '<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect width="100" height="100" fill="blue"/><text x="50" y="50" text-anchor="middle" fill="white">Test</text></svg>';
+                    filename = 'sample.svg';
+                    mimeType = 'image/svg+xml';
+                    break;
+                case 'zip':
+                    content = 'This would be a ZIP file in a real scenario. For testing, this is just text content.';
+                    filename = 'sample.zip';
+                    mimeType = 'application/zip';
+                    break;
+                case 'pdf':
+                    content = '%PDF-1.4\n1 0 obj\n<<\n/Type /Catalog\n/Pages 2 0 R\n>>\nendobj\n2 0 obj\n<<\n/Type /Pages\n/Kids [3 0 R]\n/Count 1\n>>\nendobj\n3 0 obj\n<<\n/Type /Page\n/Parent 2 0 R\n/MediaBox [0 0 612 792]\n/Contents 4 0 R\n>>\nendobj\n4 0 obj\n<<\n/Length 44\n>>\nstream\nBT\n/F1 12 Tf\n72 720 Td\n(Sample PDF) Tj\nET\nendstream\nendobj\nxref\n0 5\n0000000000 65535 f \n0000000009 00000 n \n0000000058 00000 n \n0000000115 00000 n \n0000000214 00000 n \ntrailer\n<<\n/Size 5\n/Root 1 0 R\n>>\nstartxref\n313\n%%EOF';
+                    filename = 'sample.pdf';
+                    mimeType = 'application/pdf';
+                    break;
+            }
+            
+            const blob = new Blob([content], { type: mimeType });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showNotification(`${filename} downloaded`, 'success');
+            logDownload(`${filename} downloaded successfully`);
+        }
+
+        // File Information Functions
+        function generateSampleFileInfo() {
+            const sampleFiles = [
+                { name: 'document.pdf', size: 1024000, type: 'application/pdf', modified: '2024-01-15' },
+                { name: 'image.jpg', size: 2048000, type: 'image/jpeg', modified: '2024-01-14' },
+                { name: 'data.csv', size: 512000, type: 'text/csv', modified: '2024-01-13' },
+                { name: 'archive.zip', size: 5120000, type: 'application/zip', modified: '2024-01-12' }
+            ];
+            
+            const container = document.getElementById('file-info-container');
+            container.innerHTML = '';
+            
+            sampleFiles.forEach(file => {
+                const fileInfoBox = document.createElement('div');
+                fileInfoBox.className = 'file-info-box';
+                fileInfoBox.innerHTML = `
+                    <div class="file-info-row">
+                        <span class="file-info-label">File Name:</span>
+                        <span class="file-info-value">${file.name}</span>
+                    </div>
+                    <div class="file-info-row">
+                        <span class="file-info-label">File Size:</span>
+                        <span class="file-info-value">${formatFileSize(file.size)}</span>
+                    </div>
+                    <div class="file-info-row">
+                        <span class="file-info-label">File Type:</span>
+                        <span class="file-info-value">${file.type}</span>
+                    </div>
+                    <div class="file-info-row">
+                        <span class="file-info-label">Last Modified:</span>
+                        <span class="file-info-value">${file.modified}</span>
+                    </div>
+                `;
+                container.appendChild(fileInfoBox);
+            });
+            
+            logFileInfo('Sample file information generated');
+        }
+
+        function clearFileInfo() {
+            document.getElementById('file-info-container').innerHTML = '';
+            logFileInfo('File information cleared');
+        }
+
+        // Batch Operations Functions
+        function batchDownload() {
+            const files = ['text', 'csv', 'json'];
+            let completed = 0;
+            
+            files.forEach((type, index) => {
+                setTimeout(() => {
+                    downloadFile(type);
+                    completed++;
+                    updateBatchProgress((completed / files.length) * 100);
+                    
+                    if (completed === files.length) {
+                        showNotification('Batch download completed', 'success');
+                        logBatch('Batch download completed successfully');
+                    }
+                }, index * 1000);
+            });
+        }
+
+        function batchUpload() {
+            const progress = document.getElementById('batch-progress-bar');
+            let batchProgress = 0;
+            
+            const batchInterval = setInterval(() => {
+                batchProgress += Math.random() * 15;
+                if (batchProgress >= 100) {
+                    batchProgress = 100;
+                    clearInterval(batchInterval);
+                    showNotification('Batch upload completed', 'success');
+                    logBatch('Batch upload simulation completed');
+                }
+                progress.style.width = batchProgress + '%';
+            }, 300);
+        }
+
+        function batchDelete() {
+            if (uploadedFiles.length === 0) {
+                showNotification('No files to delete', 'warning');
+                return;
+            }
+            
+            const confirmDelete = confirm(`Are you sure you want to delete all ${uploadedFiles.length} files?`);
+            if (confirmDelete) {
+                clearFileList();
+                showNotification('All files deleted', 'success');
+                logBatch('Batch delete completed');
+            }
+        }
+
+        function updateBatchProgress(progress) {
+            document.getElementById('batch-progress-bar').style.width = progress + '%';
+        }
+
+        // Utility Functions
+        function showNotification(message, type) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.style.display = 'block';
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+
+        function logUpload(message) {
+            const result = document.getElementById('upload-result');
+            result.textContent += `[${new Date().toLocaleTimeString()}] ${message}\n`;
+        }
+
+        function logDragDrop(message) {
+            const result = document.getElementById('drag-drop-result');
+            result.textContent += `[${new Date().toLocaleTimeString()}] ${message}\n`;
+        }
+
+        function logDownload(message) {
+            const result = document.getElementById('download-result');
+            result.textContent += `[${new Date().toLocaleTimeString()}] ${message}\n`;
+        }
+
+        function logFileInfo(message) {
+            const result = document.getElementById('file-info-result');
+            result.textContent += `[${new Date().toLocaleTimeString()}] ${message}\n`;
+        }
+
+        function logBatch(message) {
+            const result = document.getElementById('batch-result');
+            result.textContent += `[${new Date().toLocaleTimeString()}] ${message}\n`;
+        }
+
+        // Initialize drag and drop
+        document.addEventListener('DOMContentLoaded', function() {
+            setupDragAndDrop();
+        });
+    </script>
+</body>
+</html>
