@@ -13,13 +13,21 @@
             box-sizing: border-box;
         }
 
+        html, body {
+            width: 100%;
+            overflow-x: hidden;
+            direction: ltr; /* Soldan sağa yazı yönü */
+        }
+
         body {
             font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
             background: #000;
             min-height: 100vh;
-            overflow-x: hidden;
             position: relative;
             color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         /* Animated Background Particles */
@@ -104,6 +112,7 @@
             position: relative;
             z-index: 10;
             max-width: 1000px;
+            width: 100%;
             margin: 0 auto;
             padding: 80px 20px;
         }
@@ -418,14 +427,14 @@
                 const userName = document.getElementById('username').value;
                 const messageBox = document.getElementById('messageBox');
 
-                // Mesajı oluştur ve web sayfasında göster
-                messageBox.textContent = `Merhaba ${userName}! İşlem başarılı.`;
+                // Show message on webpage
+                messageBox.textContent = `Hello ${userName}! Operation successful.`;
                 messageBox.style.display = 'block';
 
-                // Sayfanın en üstüne scroll yap
+                // Scroll to top of page
                 window.scrollTo(0, 0);
             } catch (error) {
-                console.error("Bir hata meydana geldi:", error);
+                console.error("An error occurred:", error);
             }
         }
     </script>
@@ -438,100 +447,110 @@
     <div id="messageBox" class="message"></div>
 
     <!-- Digital Clock -->
-    <div id="clock"></div>
+    <div id="clock" title="digital-clock"></div>
 
   
     <div class="container">
-             <!-- Animated Image -->
-            <div style="text-align: center;">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/7/7f/Rotating_earth_animated_transparent.gif" alt="Açıklama yazısı" width="100">
-            </div>
+        <!-- Animated Image -->
+        <div style="text-align: center;">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/7/7f/Rotating_earth_animated_transparent.gif" 
+                 alt="Rotating Earth" 
+                 title="rotating-earth"
+                 width="100"
+                 data-testid="rotating-earth-image">
+        </div>
 
-
-        <h1>Test Otomasyon Formu</h1>
+        <h1 data-testid="page-title">Test Automation Form</h1>
 
         <!-- Test Scenarios Section -->
-        <div class="test-scenarios">
-            <h2>Test Senaryoları</h2>
+        <div class="test-scenarios" data-testid="test-scenarios-section">
+            <h2>Test Scenarios</h2>
             <ol>
-                <li>Sayfa başlığının "Test Automation Form" olarak görüntülenip görüntülenmediğini kontrol edin.</li>
-                <li>"Kullanıcı Adı" ve "Şifre" alanlarına faker ile değer girin ve formu gönderin. Başarılı mesajının ("Merhaba [Kullanıcı Adı]! İşlem başarılı.") formatinda girilen bilgilerin görüntülenip görüntülenmediğini kontrol edin.</li>
-                <li>"Kullanıcı Adı" ve "Şifre" alanlarını boş bırakın ve formu göndermeye çalışın. Uyarı mesajının/kırmızı çerçevenin görüntülenip görüntülenmediğini kontrol edin.</li>
-                <li>Cinsiyet radyo butonlarından birini (örneğin "Erkek") seçin ve formu gönderin. Seçimin başarılı bir şekilde yapıldığını doğrulayın.</li>
-                <li>"Ülke" drop-down menüsünden bir ülkeyi (örneğin "Türkiye") seçin. Seçimin başarılı bir şekilde yapıldığını doğrulayın.</li>
-                <li>"Dersler" bölümünden birden fazla ders seçin (örneğin "Java" ve "SQL"). Seçimlerin başarılı bir şekilde yapıldığını doğrulayın.</li>
-                <li>"Yorumlar" alanına bir yorum girin. Girilen yorumun başarılı bir şekilde kabul edildiğini doğrulayın.</li>
-                <li>Sayfadaki Videoyu baslatin, daha sonra durdurun, daha sonra gönder butonunun etkilesime acik oldugunu doğrulayın.</li>
-                <li>"Yorumlar" alanına bir yorum yazin ve yazinin basarili bir sekilde gönderildigini doğrulayin (JSEXECUTOR).</li>
-                <li>9. uncu maddede belirtilen test senaryosunun extent html reporter kullanarak html raporunu alin</li>
-                <li>Extent html report unuzun sayfa basliginin ve test isminin sizin belirttiginiz isimler oldugunu otomasyon ile test edin</li>
+                <li>Check if the page title is displayed as "Test Automation Form".</li>
+                <li>Enter values with faker in "Username" and "Password" fields and submit the form. Check if the success message ("Hello [Username]! Operation successful.") is displayed in the correct format.</li>
+                <li>Leave "Username" and "Password" fields empty and try to submit the form. Check if the warning message/red border is displayed.</li>
+                <li>Select one of the gender radio buttons (e.g., "Male") and submit the form. Verify that the selection was made successfully.</li>
+                <li>Select a country from the "Country" drop-down menu (e.g., "Turkey"). Verify that the selection was made successfully.</li>
+                <li>Select multiple courses from the "Courses" section (e.g., "Java" and "SQL"). Verify that the selections were made successfully.</li>
+                <li>Enter a comment in the "Comments" field. Verify that the entered comment was accepted successfully.</li>
+                <li>Start the video on the page, then stop it, then verify that the submit button is interactive.</li>
+                <li>Write a comment in the "Comments" field and verify that the text was submitted successfully </li>
             </ol>
         </div>
 
         <!-- Main Form -->
-        <form action="/test-submit" method="post" onsubmit="submitForm(event)">
-            <label for="username">Kullanıcı Adı:</label>
-            <input type="text" id="username" name="username" required>
+        <form action="/test-submit" method="post" onsubmit="submitForm(event)" data-testid="automation-form">
+            <label for="username" data-testid="username-label">Username:</label>
+            <input type="text" id="username" name="username" required 
+                   placeholder="Enter your username"
+                   data-testid="username-input">
 
-            <label for="password">Şifre:</label>
-            <input type="password" id="password" name="password" required>
+            <label for="password" data-testid="password-label">Password:</label>
+            <input type="password" id="password" name="password" required 
+                   placeholder="Enter your password"
+                   data-testid="password-input">
 
-            <label>Cinsiyet:</label>
-            <div class="radio-group">
-                <label>
-                    <input type="radio" id="male" name="gender" value="male">
-                    Erkek
+            <label data-testid="gender-label">Gender:</label>
+            <div class="radio-group" role="radiogroup" data-testid="gender-radiogroup">
+                <label data-testid="male-label">
+                    <input type="radio" id="male" name="gender" value="male" data-testid="male-radio">
+                    Male
                 </label>
-                <label>
-                    <input type="radio" id="female" name="gender" value="female">
-                    Kadın
+                <label data-testid="female-label">
+                    <input type="radio" id="female" name="gender" value="female" data-testid="female-radio">
+                    Female
                 </label>
             </div>
 
-            <label for="birthdate">Doğum Tarihi:</label>
-            <input type="date" id="birthdate" name="birthdate">
+            <label for="birthdate" data-testid="birthdate-label">Date of Birth:</label>
+            <input type="date" id="birthdate" name="birthdate" data-testid="birthdate-input">
 
-            <label for="country">Ülke:</label>
-            <select id="country" name="country">
-                <option value="turkey">Türkiye</option>
-                <option value="usa">ABD</option>
-                <option value="uk">İngiltere</option>
+            <label for="country" data-testid="country-label">Country:</label>
+            <select id="country" name="country" data-testid="country-select">
+                <option value="turkey">Turkey</option>
+                <option value="usa">USA</option>
+                <option value="uk">United Kingdom</option>
             </select>
 
-            <label for="Course">Batch:</label>
-            <select id="course" name="DTNT">
+            <label for="course" data-testid="course-label">Batch:</label>
+            <select id="course" name="DTNT" data-testid="course-select">
                 <option value="DayTime">Day Time</option>
                 <option value="NightTime">Night Time</option>
             </select>
 
-            <h3>Dersler</h3>
-            <div class="checkbox-group">
-                <label>
-                    <input type="checkbox" id="java" name="tech" value="Java">
+            <h3 data-testid="courses-title">Courses</h3>
+            <div class="checkbox-group" role="group" data-testid="courses-checkbox-group">
+                <label data-testid="java-label">
+                    <input type="checkbox" id="java" name="tech" value="Java" data-testid="java-checkbox">
                     Java
                 </label>
-                <label>
-                    <input type="checkbox" id="html-css" name="tech" value="Selenium">
+                <label data-testid="html-css-label">
+                    <input type="checkbox" id="html-css" name="tech" value="Selenium" data-testid="html-css-checkbox">
                     HTML/CSS
                 </label>
-                <label>
-                    <input type="checkbox" id="sdlc" name="tech" value="SDLC">
+                <label data-testid="sdlc-label">
+                    <input type="checkbox" id="sdlc" name="tech" value="SDLC" data-testid="sdlc-checkbox">
                     SDLC
                 </label>
-                <label>
-                    <input type="checkbox" id="sql" name="tech" value="SQL">
+                <label data-testid="sql-label">
+                    <input type="checkbox" id="sql" name="tech" value="SQL" data-testid="sql-checkbox">
                     SQL
                 </label>
             </div>
 
             <!-- Video Section -->
-            <iframe src="https://www.youtube.com/embed/vElDevkTzn8" frameborder="0" allowfullscreen></iframe>
+            <iframe src="https://www.youtube.com/embed/vElDevkTzn8" 
+                    frameborder="0" 
+                    allowfullscreen
+                    title="youtube-video"
+                    data-testid="youtube-video"></iframe>
 
-    
-            <label for="comments">Yorumlar:</label>
-            <textarea id="comments" name="comments" rows="4" placeholder="JSExecutor ile mesajınızı gönderin..."></textarea>
+            <label for="comments" data-testid="comments-label">Comments:</label>
+            <textarea id="comments" name="comments" rows="4" 
+                      placeholder="Send your message ..."
+                      data-testid="comments-textarea"></textarea>
 
-            <input type="submit" value="Gönder">
+            <input type="submit" value="Submit" data-testid="submit-button">
         </form>
     </div>
 
